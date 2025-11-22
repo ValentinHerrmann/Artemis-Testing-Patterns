@@ -22,18 +22,20 @@ This pattern aims to create a more forgiving testing environment that still main
 * **Improves student experience:** By allowing for minor naming deviations, students can focus on learning and applying concepts rather than being overly concerned with exact names and get less frustrated.
 * **Reduces instructor workload:** Minimizes the need for manual reviews of submissions due to naming issues.
 
+### Try it out
+Tests will be run using the command `./gradlew clean test`.
 
 ### Pattern Description:
 
 Overview of the Pattern Structure (details below):
-![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/de.tum.cit.aet.puml)
+![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/de.tum.cit.aet.puml)
 
 
 
 The `de.tum.cit.aet.levenshtein` package contains Wrappers classes for structure elements which shall be inherited for
 the classes to test in `de.tum.cit.aet.wrappers`. 
-![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/de.tum.cit.aet.levenshtein.puml)
+![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/de.tum.cit.aet.levenshtein.puml)
 
 `de.tum.cit.aet.wrappers` contains one Wrapper class per class to test. For definitely existing classes for which a 
 Class<?> is available the `GenericClassWrapper` can be used and no dedicated Wrapper class is necessary.
-![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/de.tum.cit.aet.wrappers.puml)
+![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/de.tum.cit.aet.wrappers.puml)
