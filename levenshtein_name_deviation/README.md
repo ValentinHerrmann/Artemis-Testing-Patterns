@@ -25,8 +25,15 @@ This pattern aims to create a more forgiving testing environment that still main
 
 ### Pattern Description:
 
-Try 1
-<!-- [Diagram Image Link](everything.puml) -->
+Overview of the Pattern Structure (details below):
+![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/de.tum.cit.aet.puml)
 
-Try 2
-![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/everything.puml)
+
+
+The `de.tum.cit.aet.levenshtein` package contains Wrappers classes for structure elements which shall be inherited for
+the classes to test in `de.tum.cit.aet.wrappers`. 
+![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/de.tum.cit.aet.levenshtein.puml)
+
+`de.tum.cit.aet.wrappers` contains one Wrapper class per class to test. For definitely existing classes for which a 
+Class<?> is available the `GenericClassWrapper` can be used and no dedicated Wrapper class is necessary.
+![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/de.tum.cit.aet.wrappers.puml)

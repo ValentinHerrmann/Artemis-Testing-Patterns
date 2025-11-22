@@ -1,26 +1,18 @@
 @startuml
-class LevenshteinNameDeviationPattern {
-  + findWithDeviation(expectedName: String, actualNames: List<String>): String
-  + calculateLevenshteinDistance(str1: String, str2: String): int
-  + isNameWithinDeviation(expectedName: String, actualName: String, threshold: int): boolean
-}
-@enduml
-```
-</div>
-
-![](firstDiagram.svg)
-
-@startuml
 skinparam classAttributeIconSize 0
 hide circle
+hide members
+
+
 /'
 hide private members
 hide protected members
 hide package members
 '/
+!include https://raw.githubusercontent.com/patrik-csak/one-dark-plantuml-theme/v1.0.1/theme.puml
 
-package  "levenshtein" {
-
+package "de.cit.tum.aet" as AET {
+package levenshtein {
 
 abstract class Wrapper<T> {
 ~ name : WrapperProperty<String>
@@ -106,6 +98,7 @@ class GenericClassWrapper {
 +getClazz(): Class<T>
 +getObj(): Object
 }
+note bottom : Wrapper for definitely existing classes. \ Needs a Class<T> object to be provided \ and does not check for non-existence.
 
 abstract class ClassWrapper {
 -expectedPackage: String
@@ -187,4 +180,37 @@ ClassWrapper o-left- WrapperProperty
 '/
 
 }
+
+package wrappers {
+
+class SuperClassToTest {
+
+}
+
+
+class AnotherClassToTest {
+
+}
+
+class SomeInterfaceToTest {
+
+}
+
+
+SuperClassToTest ..> AnotherClassToTest : superClassWrapper
+SomeInterfaceToTest ..> AnotherClassToTest : interfaceWrappers
+
+
+SuperClassToTest -u-|> ClassWrapper
+AnotherClassToTest -r-|> ClassWrapper
+SomeInterfaceToTest -d-|> ClassWrapper
+
+
+SuperClassToTest *-- MethodWrapper: doSomething
+SuperClassToTest *-- AttributeWrapper: someProperty
+
+
+}
+}
+
 @enduml
