@@ -19,12 +19,8 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
     private Class<T> clazz;
     protected T obj;
 
-    //WrapperProperty<Class<?>> superClass;
-    //WrapperProperty<Class<?>[]> interfaces;
     WrapperProperty<ClassWrapper<?>> superClassWrapper;
     WrapperProperty<ClassWrapper<?>[]> interfaceWrappers;
-
-
 
     public ClassWrapper(String expectedName, String expectedPackage, ClassWrapper<?> superClassWrapper, ClassWrapper<?>[] interfaceWrappers, String... modifiers) {
         super(null, expectedName, modifiers);
