@@ -67,49 +67,49 @@ public class CarWrapper<T> extends ClassWrapper<T> {
     }
 
     // Getters for Car-specific methods
-    public MethodWrapper<T, ?> getNumberOfDoorsMethod() {
+    public MethodWrapper<T, ?> getNumberOfDoors() {
         return getNumberOfDoors;
     }
 
-    public MethodWrapper<T, String> getFuelTypeMethod() {
+    public MethodWrapper<T, String> getFuelType() {
         return getFuelType;
     }
 
-    public MethodWrapper<T, ?> getEngineCapacityMethod() {
+    public MethodWrapper<T, ?> getEngineCapacity() {
         return getEngineCapacity;
     }
 
-    public MethodWrapper<T, Boolean> isElectricMethod() {
+    public MethodWrapper<T, Boolean> isElectric() {
         return isElectric;
     }
 
     // Getters for interface methods
-    public MethodWrapper<T, Boolean> startEngineMethod() {
+    public MethodWrapper<T, Boolean> startEngine() {
         return startEngine;
     }
 
-    public MethodWrapper<T, Void> accelerateMethod() {
+    public MethodWrapper<T, Void> accelerate() {
         return accelerate;
     }
 
-    public MethodWrapper<T, Void> brakeMethod() {
+    public MethodWrapper<T, Void> brake() {
         return brake;
     }
 
-    public MethodWrapper<T, ?> getCurrentSpeedMethod() {
+    public MethodWrapper<T, ?> getCurrentSpeed() {
         return getCurrentSpeed;
     }
 
     // Getters for overridden abstract methods
-    public MethodWrapper<T, ?> calculateFuelConsumptionMethod() {
+    public MethodWrapper<T, ?> calculateFuelConsumption() {
         return calculateFuelConsumption;
     }
 
-    public MethodWrapper<T, ?> getMaxSpeedMethod() {
+    public MethodWrapper<T, ?> getMaxSpeed() {
         return getMaxSpeed;
     }
 
-    public MethodWrapper<T, String> getVehicleInfoMethod() {
+    public MethodWrapper<T, String> getVehicleInfo() {
         return getVehicleInfo;
     }
 
