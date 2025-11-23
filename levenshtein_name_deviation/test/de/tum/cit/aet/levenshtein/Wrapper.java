@@ -137,13 +137,32 @@ public abstract class Wrapper<T>
     public String toString()
     {
         parseExistence();
-        String intro = switch (existence) {
-            case EXACT -> "✅ ";
-            case DEVIATES -> "⚠️ DEVIATION ⚠️ \nIf possible actual will be used for further testing";
-            case MISSING -> "❌ MISSING ❌";
+        return switch (existence) {
+            case EXACT -> String.format(
+                    """
+                    ✅ CORRECT in %s ✅
+                    Expect = Actual:\t%s
+                    """,
+                    getParentClassWrapper().name.expected, expectedToString()
+            );
+            case DEVIATES -> String.format(
+                    """
+                    ⚠️ DEVIATION in %s ⚠️
+                    If possible actual will be used for further testing.
+                    Expect:\t%s
+                    Actual:\t%s
+                    """,
+                    getParentClassWrapper().name.expected, expectedToString(),actualToString()
+            );
+            case MISSING -> String.format(
+                    """
+                    ❌️ MISSING in %s ❌️
+                    Expect:\t%s
+                    """,
+                    getParentClassWrapper().name.expected, expectedToString()
+            );
             default -> "Existence unchecked.";
-        } + " in class %s".formatted(getParentClassWrapper().name.expected);
-        return String.format("%s\nExpect:\t%s\nActual:\t%s", intro, expectedToString(), actualToString());
+        };
     }
     public abstract String expectedToString();
     public abstract String actualToString();

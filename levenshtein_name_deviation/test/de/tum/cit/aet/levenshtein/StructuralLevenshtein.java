@@ -29,7 +29,7 @@ public class StructuralLevenshtein {
                     break;
             }
         }
-        Assertions.assertThat(msg).withFailMessage(String.join("\n", msg)).isEmpty();
+        Assertions.assertThat(msg).withFailMessage("\n"+String.join("\n", msg)+"\n").isEmpty();
     }
 
 
