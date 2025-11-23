@@ -67,23 +67,13 @@ public class TestManager {
     }
 
     // ============================================================================
-    // AbstractVehicle Tests
+    // AbstractVehicle Tests (5 tests)
     // ============================================================================
 
     @Test
     void testAbstrConstructorManufacturer() {
         try {
             TestAbstr.testConstructorManufacturer();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testAbstrConstructorModel() {
-        try {
-            TestAbstr.testConstructorModel();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -101,26 +91,6 @@ public class TestManager {
     }
 
     @Test
-    void testAbstrEngineNotRunningInitially() {
-        try {
-            TestAbstr.testEngineNotRunningInitially();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testAbstrCurrentSpeedInitiallyZero() {
-        try {
-            TestAbstr.testCurrentSpeedInitiallyZero();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
     void testAbstrGetManufacturer() {
         try {
             TestAbstr.testGetManufacturer();
@@ -131,9 +101,9 @@ public class TestManager {
     }
 
     @Test
-    void testAbstrGetModel() {
+    void testAbstrGetYear() {
         try {
-            TestAbstr.testGetModel();
+            TestAbstr.testGetYear();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -141,19 +111,9 @@ public class TestManager {
     }
 
     @Test
-    void testAbstrGetYearOfManufacture() {
+    void testAbstrGetInfo() {
         try {
-            TestAbstr.testGetYearOfManufacture();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testAbstrIsEngineRunning() {
-        try {
-            TestAbstr.testIsEngineRunning();
+            TestAbstr.testGetInfo();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -161,7 +121,7 @@ public class TestManager {
     }
 
     // ============================================================================
-    // Car Implementation Tests
+    // Car Implementation Tests (8 tests)
     // ============================================================================
 
     @Test
@@ -175,9 +135,9 @@ public class TestManager {
     }
 
     @Test
-    void testImplStartEngineFirstCall() {
+    void testImplConstructorDefault() {
         try {
-            TestImpl.testStartEngineFirstCall();
+            TestImpl.testConstructorDefault();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -185,9 +145,9 @@ public class TestManager {
     }
 
     @Test
-    void testImplStartEngineSecondCall() {
+    void testImplStart() {
         try {
-            TestImpl.testStartEngineSecondCall();
+            TestImpl.testStart();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -195,9 +155,9 @@ public class TestManager {
     }
 
     @Test
-    void testImplAccelerate() {
+    void testImplGetSpeed() {
         try {
-            TestImpl.testAccelerate();
+            TestImpl.testGetSpeed();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -205,9 +165,9 @@ public class TestManager {
     }
 
     @Test
-    void testImplBrake() {
+    void testImplCalculateCost() {
         try {
-            TestImpl.testBrake();
+            TestImpl.testCalculateCost();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -215,9 +175,9 @@ public class TestManager {
     }
 
     @Test
-    void testImplGetCurrentSpeed() {
+    void testImplCalculateCostWithYears() {
         try {
-            TestImpl.testGetCurrentSpeed();
+            TestImpl.testCalculateCostWithYears();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -225,9 +185,9 @@ public class TestManager {
     }
 
     @Test
-    void testImplCalculateFuelConsumption() {
+    void testImplGetInfo() {
         try {
-            TestImpl.testCalculateFuelConsumption();
+            TestImpl.testGetInfo();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -235,69 +195,9 @@ public class TestManager {
     }
 
     @Test
-    void testImplGetMaxSpeed() {
+    void testImplGetPrice() {
         try {
-            TestImpl.testGetMaxSpeed();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testImplIsElectricPetrol() {
-        try {
-            TestImpl.testIsElectricPetrol();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testImplIsElectricElectric() {
-        try {
-            TestImpl.testIsElectricElectric();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testImplGetVehicleInfo() {
-        try {
-            TestImpl.testGetVehicleInfo();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testImplGetNumberOfDoors() {
-        try {
-            TestImpl.testGetNumberOfDoors();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testImplGetFuelType() {
-        try {
-            TestImpl.testGetFuelType();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testImplGetEngineCapacity() {
-        try {
-            TestImpl.testGetEngineCapacity();
+            TestImpl.testGetPrice();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
@@ -305,8 +205,49 @@ public class TestManager {
     }
 
     // ============================================================================
-    // Interface Tests
+    // Interface Tests (5 tests)
     // ============================================================================
+
+    @Test
+    void testInterfaceExists() {
+        try {
+            TestInterface.testInterfaceExists();
+        }
+        catch (AssertionError e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void testInterfaceMaxSpeedConstant() {
+        try {
+            TestInterface.testMaxSpeedConstant();
+        }
+        catch (AssertionError e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void testInterfaceStartMethodExists() {
+        try {
+            TestInterface.testStartMethodExists();
+        }
+        catch (AssertionError e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    void testInterfaceGetSpeedMethodExists() {
+        try {
+            TestInterface.testGetSpeedMethodExists();
+        }
+        catch (AssertionError e) {
+            fail(e.getMessage());
+        }
+    }
+
     @Test
     void testInterfaceCarImplementsInterface() {
         try {

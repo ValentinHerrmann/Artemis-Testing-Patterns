@@ -9,16 +9,17 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for the Car implementation class.
+ * Simplified to match the new example structure.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestImpl {
 
     /**
-     * Test the constructor with full parameters.
+     * Test the full constructor.
      */
     public static void testConstructorFull() {
         Assertions.assertThatCode(() ->
-            carImpl().constructor_full().invoke("BMW", "M3", 2023, 4, "Petrol", 3.0))
+            carImpl().constructor_full().invoke("BMW", 2023, 35000.0))
             .withFailMessage("Constructor of %s is not implemented correctly.",
                            carImpl().getExpectedName())
             .doesNotThrowAnyException();
@@ -31,200 +32,109 @@ public class TestImpl {
             .isEqualTo("BMW");
         
         // Verify Car-specific attributes
-        Object doors = carImpl().numberOfDoors().getValue(carImpl().getObj());
-        Assertions.assertThat((int)doors)
+        Object price = carImpl().price().getValue(carImpl().getObj());
+        Assertions.assertThat((double)price)
             .withFailMessage("Attribute %s must be equal to constructor argument.",
-                           carImpl().numberOfDoors().getExpectedName())
-            .isEqualTo(4);
-        
-        Object fuelType = carImpl().fuelType().getValue(carImpl().getObj());
-        Assertions.assertThat(fuelType)
-            .withFailMessage("Attribute %s must be equal to constructor argument.",
-                           carImpl().fuelType().getExpectedName())
-            .isEqualTo("Petrol");
-        
-        Object engineCapacity = carImpl().engineCapacity().getValue(carImpl().getObj());
-        Assertions.assertThat((double)engineCapacity)
-            .withFailMessage("Attribute %s must be equal to constructor argument.",
-                           carImpl().engineCapacity().getExpectedName())
-            .isEqualTo(3.0, Assertions.within(0.001));
+                           carImpl().price().getExpectedName())
+            .isEqualTo(35000.0, Assertions.within(0.001));
     }
     
     /**
-     * Test startEngine method - first call should return true.
+     * Test the default constructor (constructor overloading).
      */
-    public static void testStartEngineFirstCall() {
-        Boolean started = carImpl().startEngine().invoke(carImpl().getObj());
-        Assertions.assertThat(started)
-            .withFailMessage("Method %s should return true on first call.",
-                           carImpl().startEngine().getExpectedName())
-            .isTrue();
-        
-        Boolean engineRunning = vehicleAbstr().engineRunning().getValue(carImpl().getObj());
-        Assertions.assertThat(engineRunning)
-            .withFailMessage("Attribute %s should be true after starting engine.",
-                           vehicleAbstr().engineRunning().getExpectedName())
-            .isTrue();
-    }
-    
-    /**
-     * Test startEngine method - second call should return false.
-     */
-    public static void testStartEngineSecondCall() {
-        // Start engine again (should already be running)
-        Boolean started = carImpl().startEngine().invoke(carImpl().getObj());
-        Assertions.assertThat(started)
-            .withFailMessage("Method %s should return false if engine is already running.",
-                           carImpl().startEngine().getExpectedName())
-            .isFalse();
-    }
-    
-    /**
-     * Test accelerate method.
-     */
-    public static void testAccelerate() {
-        // Get initial speed
-        Object initialSpeed = carImpl().getCurrentSpeed().invoke(carImpl().getObj());
+    public static void testConstructorDefault() {
+        Object car = carImpl().constructor_default().invoke("Toyota", 2022);
 
-        // Accelerate
-        carImpl().accelerate().invoke(carImpl().getObj(), 50.0);
-
-        // Check speed increased
-        Object newSpeed = carImpl().getCurrentSpeed().invoke(carImpl().getObj());
-        Assertions.assertThat((double)newSpeed)
-            .withFailMessage("Speed should increase after calling %s.",
-                           carImpl().accelerate().getExpectedName())
-            .isGreaterThan((double)initialSpeed);
-    }
-    
-    /**
-     * Test brake method.
-     */
-    public static void testBrake() {
-        // Accelerate first to have some speed
-        carImpl().accelerate().invoke(carImpl().getObj(), 100.0);
-
-        Object speedBeforeBrake = carImpl().getCurrentSpeed().invoke(carImpl().getObj());
-
-        // Apply brakes
-        carImpl().brake().invoke(carImpl().getObj(), 0.5);
-
-        Object speedAfterBrake = carImpl().getCurrentSpeed().invoke(carImpl().getObj());
-        Assertions.assertThat((double)speedAfterBrake)
-            .withFailMessage("Speed should decrease after calling %s.",
-                           carImpl().brake().getExpectedName())
-            .isLessThan((double)speedBeforeBrake);
-    }
-    
-    /**
-     * Test getCurrentSpeed method.
-     */
-    public static void testGetCurrentSpeed() {
-        Object speed = carImpl().getCurrentSpeed().invoke(carImpl().getObj());
-        Assertions.assertThat(speed)
-            .withFailMessage("Method %s should return a valid speed value.",
-                           carImpl().getCurrentSpeed().getExpectedName())
+        Assertions.assertThat(car)
+            .withFailMessage("Constructor with default price should create valid object.")
             .isNotNull();
+
+        // Price should be default value (20000.0)
+        Object price = carImpl().price().getValue(car);
+        Assertions.assertThat((double)price)
+            .withFailMessage("Default constructor should set price to 20000.0")
+            .isEqualTo(20000.0, Assertions.within(0.001));
+    }
+
+    /**
+     * Test start method from interface.
+     */
+    public static void testStart() {
+        carImpl().startMethod().invoke(carImpl().getObj());
+
+        Object speed = carImpl().speed().getValue(carImpl().getObj());
+        Assertions.assertThat((double)speed)
+            .withFailMessage("Speed should be set after calling %s.",
+                           carImpl().startMethod().getExpectedName())
+            .isEqualTo(10.0, Assertions.within(0.001));
     }
     
     /**
-     * Test calculateFuelConsumption method.
+     * Test getSpeed method from interface.
      */
-    public static void testCalculateFuelConsumption() {
-        Object consumption = carImpl().calculateFuelConsumption().invoke(carImpl().getObj());
-        Assertions.assertThat(consumption)
-            .withFailMessage("Method %s should return a valid consumption value.",
-                           carImpl().calculateFuelConsumption().getExpectedName())
+    public static void testGetSpeed() {
+        carImpl().startMethod().invoke(carImpl().getObj());
+
+        Object speed = carImpl().getSpeedMethod().invoke(carImpl().getObj());
+        Assertions.assertThat((double)speed)
+            .withFailMessage("Method %s should return the current speed.",
+                           carImpl().getSpeedMethod().getExpectedName())
+            .isEqualTo(10.0, Assertions.within(0.001));
+    }
+
+    /**
+     * Test calculateCost method (no parameters).
+     */
+    public static void testCalculateCost() {
+        Object cost = carImpl().calculateCostMethod().invoke(carImpl().getObj());
+        Assertions.assertThat(cost)
+            .withFailMessage("Method %s should return a valid cost value.",
+                           carImpl().calculateCostMethod().getExpectedName())
             .isNotNull();
         
-        Assertions.assertThat((double)consumption)
-            .withFailMessage("Fuel consumption should be positive.",
-                           carImpl().calculateFuelConsumption().getExpectedName())
-            .isGreaterThan(0.0);
+        // Cost should be 10% of price (35000 * 0.1 = 3500)
+        Assertions.assertThat((double)cost)
+            .withFailMessage("Cost should be 10%% of price.")
+            .isEqualTo(3500.0, Assertions.within(0.001));
     }
     
     /**
-     * Test getMaxSpeed method.
+     * Test calculateCost method with years parameter (method overloading).
      */
-    public static void testGetMaxSpeed() {
-        Object maxSpeed = carImpl().getMaxSpeed().invoke(carImpl().getObj());
-        Assertions.assertThat(maxSpeed)
-            .withFailMessage("Method %s should return a valid max speed value.",
-                           carImpl().getMaxSpeed().getExpectedName())
+    public static void testCalculateCostWithYears() {
+        Object cost = carImpl().calculateCostYearsMethod().invoke(carImpl().getObj(), 5);
+        Assertions.assertThat(cost)
+            .withFailMessage("Method %s with years parameter should return a valid cost value.",
+                           carImpl().calculateCostYearsMethod().getExpectedName())
             .isNotNull();
         
-        Assertions.assertThat((double)maxSpeed)
-            .withFailMessage("Max speed should be greater than 0.",
-                           carImpl().getMaxSpeed().getExpectedName())
-            .isGreaterThan(0.0);
+        // Cost should be 10% of price * years (35000 * 0.1 * 5 = 17500)
+        Assertions.assertThat((double)cost)
+            .withFailMessage("Cost for 5 years should be correct.")
+            .isEqualTo(17500.0, Assertions.within(0.001));
     }
     
     /**
-     * Test isElectric method for petrol car.
+     * Test getInfo method (method overriding).
      */
-    public static void testIsElectricPetrol() {
-        Boolean isElectric = carImpl().isElectric().invoke(carImpl().getObj());
-        Assertions.assertThat(isElectric)
-            .withFailMessage("Method %s should return false for petrol car.",
-                           carImpl().isElectric().getExpectedName())
-            .isFalse();
-    }
-    
-    /**
-     * Test isElectric method for electric car.
-     */
-    public static void testIsElectricElectric() {
-        Object electricCar = carImpl().constructor_full().invoke("Tesla", "Model 3", 2024, 4, "Electric", 0.0);
-        Boolean isElectric = carImpl().isElectric().invoke(electricCar);
-        Assertions.assertThat(isElectric)
-            .withFailMessage("Method %s should return true for electric car.",
-                           carImpl().isElectric().getExpectedName())
-            .isTrue();
-    }
-    
-    /**
-     * Test getVehicleInfo method.
-     */
-    public static void testGetVehicleInfo() {
-        String info = carImpl().getVehicleInfo().invoke(carImpl().getObj());
+    public static void testGetInfo() {
+        String info = carImpl().getInfoMethod().invoke(carImpl().getObj());
         Assertions.assertThat(info)
             .withFailMessage("Method %s should return vehicle information.",
-                           carImpl().getVehicleInfo().getExpectedName())
+                           carImpl().getInfoMethod().getExpectedName())
             .isNotNull()
-            .contains("BMW", "M3", "2023");
+            .contains("BMW", "2023", "35000");
     }
     
     /**
-     * Test getNumberOfDoors method.
+     * Test getPrice method.
      */
-    public static void testGetNumberOfDoors() {
-        Object doors = carImpl().getNumberOfDoors().invoke(carImpl().getObj());
-        Assertions.assertThat((int)doors)
-            .withFailMessage("Method %s should return the correct number of doors.",
-                           carImpl().getNumberOfDoors().getExpectedName())
-            .isEqualTo(4);
-    }
-    
-    /**
-     * Test getFuelType method.
-     */
-    public static void testGetFuelType() {
-        String fuelType = carImpl().getFuelType().invoke(carImpl().getObj());
-        Assertions.assertThat(fuelType)
-            .withFailMessage("Method %s should return the correct fuel type.",
-                           carImpl().getFuelType().getExpectedName())
-            .isEqualTo("Petrol");
-    }
-    
-    /**
-     * Test getEngineCapacity method.
-     */
-    public static void testGetEngineCapacity() {
-        Object capacity = carImpl().getEngineCapacity().invoke(carImpl().getObj());
-        Assertions.assertThat((double)capacity)
-            .withFailMessage("Method %s should return the correct engine capacity.",
-                           carImpl().getEngineCapacity().getExpectedName())
-            .isEqualTo(3.0, Assertions.within(0.001));
+    public static void testGetPrice() {
+        Object price = carImpl().getPriceMethod().invoke(carImpl().getObj());
+        Assertions.assertThat((double)price)
+            .withFailMessage("Method %s should return the price.",
+                           carImpl().getPriceMethod().getExpectedName())
+            .isEqualTo(35000.0, Assertions.within(0.001));
     }
 }
 

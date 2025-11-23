@@ -6,48 +6,30 @@ import static de.tum.cit.aet.Constants.*;
 
 /**
  * Wrapper for the AbstractVehicle abstract class.
- * Defines the expected structure, attributes, constructor, and methods.
+ * Simplified version matching the new example structure.
  */
 public class AbstrWrapper<T> extends ClassWrapper<T> {
     
     private final AttributeWrapper<T, String> manufacturer;
-    private final AttributeWrapper<T, String> model;
-    private final AttributeWrapper<T, ?> yearOfManufacture;
-    private final AttributeWrapper<T, ?> currentSpeed;
-    private final AttributeWrapper<T, Boolean> engineRunning;
-    
+    private final AttributeWrapper<T, ?> year;
+
     private final ConstructorWrapper<T> constructor;
     
     private final MethodWrapper<T, String> getManufacturerMethod;
-    private final MethodWrapper<T, String> getModelMethod;
-    private final MethodWrapper<T, ?> getYearOfManufactureMethod;
-    private final MethodWrapper<T, Boolean> isEngineRunningMethod;
-    private final MethodWrapper<T, String> getVehicleInfoMethod;
-    private final MethodWrapper<T, ?> calculateFuelConsumptionMethod;
-    private final MethodWrapper<T, ?> getMaxSpeedMethod;
+    private final MethodWrapper<T, ?> getYearMethod;
+    private final MethodWrapper<T, ?> calculateCostMethod;
+    private final MethodWrapper<T, String> getInfoMethod;
 
     // Getters for attributes
     public AttributeWrapper<T, String> manufacturer() {
         return manufacturer;
     }
 
-    public AttributeWrapper<T, String> model() {
-        return model;
+    public AttributeWrapper<T, ?> year() {
+        return year;
     }
 
-    public AttributeWrapper<T, ?> yearOfManufacture() {
-        return yearOfManufacture;
-    }
-
-    public AttributeWrapper<T, ?> currentSpeed() {
-        return currentSpeed;
-    }
-
-    public AttributeWrapper<T, Boolean> engineRunning() {
-        return engineRunning;
-    }
-
-    // Getters for constructor
+    // Getter for constructor
     public ConstructorWrapper<T> constructor() {
         return constructor;
     }
@@ -57,28 +39,16 @@ public class AbstrWrapper<T> extends ClassWrapper<T> {
         return getManufacturerMethod;
     }
 
-    public MethodWrapper<T, String> getModelMethod() {
-        return getModelMethod;
+    public MethodWrapper<T, ?> getYearMethod() {
+        return getYearMethod;
     }
 
-    public MethodWrapper<T, ?> getYearOfManufactureMethod() {
-        return getYearOfManufactureMethod;
+    public MethodWrapper<T, ?> calculateCostMethod() {
+        return calculateCostMethod;
     }
 
-    public MethodWrapper<T, Boolean> isEngineRunningMethod() {
-        return isEngineRunningMethod;
-    }
-
-    public MethodWrapper<T, String> getVehicleInfoMethod() {
-        return getVehicleInfoMethod;
-    }
-
-    public MethodWrapper<T, ?> calculateFuelConsumptionMethod() {
-        return calculateFuelConsumptionMethod;
-    }
-
-    public MethodWrapper<T, ?> getMaxSpeedMethod() {
-        return getMaxSpeedMethod;
+    public MethodWrapper<T, String> getInfoMethod() {
+        return getInfoMethod;
     }
 
     public AbstrWrapper() {
@@ -94,29 +64,14 @@ public class AbstrWrapper<T> extends ClassWrapper<T> {
                                                String.class,
                                                "protected");
 
-        model = new AttributeWrapper<>(this,
-                                        "model",
-                                        String.class,
-                                        "protected");
-
-        yearOfManufacture = new AttributeWrapper<>(this,
-                                                     "yearOfManufacture",
-                                                     yearType(),
-                                                     "protected");
-
-        currentSpeed = new AttributeWrapper<>(this,
-                                               "currentSpeed",
-                                               speedType(),
-                                               "protected");
-
-        engineRunning = new AttributeWrapper<>(this,
-                                                "engineRunning",
-                                                boolean.class,
-                                                "protected");
+        year = new AttributeWrapper<>(this,
+                                       "year",
+                                       yearType(),
+                                       "protected");
 
         // Initialize constructor
         constructor = new ConstructorWrapper<>(this,
-                                                new Class<?>[]{String.class, String.class, yearType()},
+                                                new Class<?>[]{String.class, yearType()},
                                                 "public");
 
         // Initialize methods
@@ -126,47 +81,29 @@ public class AbstrWrapper<T> extends ClassWrapper<T> {
                                                      new Class<?>[]{},
                                                      "public");
 
-        getModelMethod = new MethodWrapper<>(this,
-                                              "getModel",
-                                              String.class,
-                                              new Class<?>[]{},
-                                              "public");
+        getYearMethod = new MethodWrapper<>(this,
+                                             "getYear",
+                                             yearType(),
+                                             new Class<?>[]{},
+                                             "public");
 
-        getYearOfManufactureMethod = new MethodWrapper<>(this,
-                                                          "getYearOfManufacture",
-                                                          yearType(),
-                                                          new Class<?>[]{},
-                                                          "public");
+        calculateCostMethod = new MethodWrapper<>(this,
+                                                   overwrittenMethod(),
+                                                   calcReturnType(),
+                                                   new Class<?>[]{},
+                                                   "public", "abstract");
 
-        isEngineRunningMethod = new MethodWrapper<>(this,
-                                                     "isEngineRunning",
-                                                     boolean.class,
-                                                     new Class<?>[]{},
-                                                     "public");
-
-        getVehicleInfoMethod = new MethodWrapper<>(this,
-                                                    "getVehicleInfo",
-                                                    String.class,
-                                                    new Class<?>[]{},
-                                                    "public");
-
-        calculateFuelConsumptionMethod = new MethodWrapper<>(this,
-                                                               overwrittenMethod(),
-                                                               calcReturnType(),
-                                                               new Class<?>[]{},
-                                                               "public", "abstract");
-
-        getMaxSpeedMethod = new MethodWrapper<>(this,
-                                                 "getMaxSpeed",
-                                                 speedType(),
-                                                 new Class<?>[]{},
-                                                 "public", "abstract");
+        getInfoMethod = new MethodWrapper<>(this,
+                                             "getInfo",
+                                             String.class,
+                                             new Class<?>[]{},
+                                             "public");
     }
 
     @Override
     public Object getObj() {
         if (obj == null) {
-            obj = constructor.invoke("BMW", "M3", 2023);
+            obj = constructor.invoke("BMW", 2023);
         }
         return obj;
     }

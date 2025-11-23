@@ -8,110 +8,76 @@ import org.assertj.core.api.Assertions;
 
 /**
  * Wrapper for the Car concrete class.
- * Defines the expected structure including inheritance from AbstractVehicle
- * and implementation of Driveable interface.
+ * Simplified version matching the new example structure.
  */
 public class CarWrapper<T> extends ClassWrapper<T> {
     
     // Car-specific attributes
-    private final AttributeWrapper<T, ?> numberOfDoors;
-    private final AttributeWrapper<T, String> fuelType;
-    private final AttributeWrapper<T, ?> engineCapacity;
-    private final AttributeWrapper<T, ?> maxSpeed;
-    private final AttributeWrapper<T, ?> fuelConsumptionRate;
+    private final AttributeWrapper<T, ?> price;
+    private final AttributeWrapper<T, ?> speed;
 
-    // Constructor
+    // Constructors (demonstrates constructor overloading)
     private final ConstructorWrapper<T> constructor_full;
+    private final ConstructorWrapper<T> constructor_default;
 
     // Car-specific methods
-    private final MethodWrapper<T, ?> getNumberOfDoors;
-    private final MethodWrapper<T, String> getFuelType;
-    private final MethodWrapper<T, ?> getEngineCapacity;
-    private final MethodWrapper<T, Boolean> isElectric;
+    private final MethodWrapper<T, ?> getPriceMethod;
 
     // Interface methods (from Driveable)
-    private final MethodWrapper<T, Boolean> startEngine;
-    private final MethodWrapper<T, Void> accelerate;
-    private final MethodWrapper<T, Void> brake;
-    private final MethodWrapper<T, ?> getCurrentSpeed;
+    private final MethodWrapper<T, Void> startMethod;
+    private final MethodWrapper<T, ?> getSpeedMethod;
 
-    // Overridden abstract methods (from AbstractVehicle)
-    private final MethodWrapper<T, ?> calculateFuelConsumption;
-    private final MethodWrapper<T, ?> getMaxSpeed;
-    private final MethodWrapper<T, String> getVehicleInfo;
+    // Overridden methods
+    private final MethodWrapper<T, ?> calculateCostMethod;
+    private final MethodWrapper<T, ?> calculateCostYearsMethod; // Method overloading
+    private final MethodWrapper<T, String> getInfoMethod;
 
     // Getters for attributes
-    public AttributeWrapper<T, ?> numberOfDoors() {
-        return numberOfDoors;
+    public AttributeWrapper<T, ?> price() {
+        return price;
     }
 
-    public AttributeWrapper<T, String> fuelType() {
-        return fuelType;
+    public AttributeWrapper<T, ?> speed() {
+        return speed;
     }
 
-    public AttributeWrapper<T, ?> engineCapacity() {
-        return engineCapacity;
-    }
-
-    public AttributeWrapper<T, ?> maxSpeed() {
-        return maxSpeed;
-    }
-
-    public AttributeWrapper<T, ?> fuelConsumptionRate() {
-        return fuelConsumptionRate;
-    }
-
-    // Getter for constructor
+    // Getters for constructors
     public ConstructorWrapper<T> constructor_full() {
         return constructor_full;
     }
 
+    public ConstructorWrapper<T> constructor_default() {
+        return constructor_default;
+    }
+
     // Getters for Car-specific methods
-    public MethodWrapper<T, ?> getNumberOfDoors() {
-        return getNumberOfDoors;
-    }
-
-    public MethodWrapper<T, String> getFuelType() {
-        return getFuelType;
-    }
-
-    public MethodWrapper<T, ?> getEngineCapacity() {
-        return getEngineCapacity;
-    }
-
-    public MethodWrapper<T, Boolean> isElectric() {
-        return isElectric;
+    public MethodWrapper<T, ?> getPriceMethod() {
+        return getPriceMethod;
     }
 
     // Getters for interface methods
-    public MethodWrapper<T, Boolean> startEngine() {
-        return startEngine;
+    public MethodWrapper<T, Void> startMethod() {
+        return startMethod;
     }
 
-    public MethodWrapper<T, Void> accelerate() {
-        return accelerate;
+    public MethodWrapper<T, ?> getSpeedMethod() {
+        return getSpeedMethod;
     }
 
-    public MethodWrapper<T, Void> brake() {
-        return brake;
+    // Getters for overridden methods
+    public MethodWrapper<T, ?> calculateCostMethod() {
+        return calculateCostMethod;
     }
 
-    public MethodWrapper<T, ?> getCurrentSpeed() {
-        return getCurrentSpeed;
+    public MethodWrapper<T, ?> calculateCostYearsMethod() {
+        return calculateCostYearsMethod;
+    }
+
+    public MethodWrapper<T, String> getInfoMethod() {
+        return getInfoMethod;
     }
 
     // Getters for overridden abstract methods
-    public MethodWrapper<T, ?> calculateFuelConsumption() {
-        return calculateFuelConsumption;
-    }
-
-    public MethodWrapper<T, ?> getMaxSpeed() {
-        return getMaxSpeed;
-    }
-
-    public MethodWrapper<T, String> getVehicleInfo() {
-        return getVehicleInfo;
-    }
 
     public CarWrapper(ClassWrapper<?> superClassWrapper, ClassWrapper<?>... interfaceWrappers) {
         super(concreteClass(),
@@ -120,119 +86,79 @@ public class CarWrapper<T> extends ClassWrapper<T> {
               interfaceWrappers,
               "public");
 
-        // Initialize Car-specific attributes
-        numberOfDoors = new AttributeWrapper<>(this,
-                                                concreteClassAttribute(),
-                                                doorType(),
-                                                "private");
+        // Initialize attributes
+        price = new AttributeWrapper<>(this,
+                                        "price",
+                                        double.class,
+                                        "private");
 
-        fuelType = new AttributeWrapper<>(this,
-                                           "fuelType",
-                                           String.class,
-                                           "private");
+        speed = new AttributeWrapper<>(this,
+                                        "speed",
+                                        speedType(),
+                                        "private");
 
-        engineCapacity = new AttributeWrapper<>(this,
-                                                 "engineCapacity",
-                                                 engineCapacityType(),
-                                                 "private");
-
-        maxSpeed = new AttributeWrapper<>(this,
-                                           "maxSpeed",
-                                           speedType(),
-                                           "private");
-
-        fuelConsumptionRate = new AttributeWrapper<>(this,
-                                                       "fuelConsumptionRate",
-                                                       speedType(),
-                                                       "private");
-
-        // Initialize constructor
+        // Initialize constructors (constructor overloading)
         constructor_full = new ConstructorWrapper<>(this,
                                                      new Class<?>[]{
                                                          String.class,
-                                                         String.class,
                                                          yearType(),
-                                                         doorType(),
-                                                         String.class,
-                                                         engineCapacityType()
+                                                         double.class
                                                      },
                                                      "public");
 
-        // Initialize Car-specific methods
-        getNumberOfDoors =  new MethodWrapper<>(this,
-                                                       "getNumberOfDoors",
-                                                       doorType(),
-                                                       new Class<?>[]{},
-                                                       "public");
-
-        getFuelType =  new MethodWrapper<>(this,
-                                                 "getFuelType",
-                                                 String.class,
-                                                 new Class<?>[]{},
-                                                 "public");
-
-        getEngineCapacity =  new MethodWrapper<>(this,
-                                                        "getEngineCapacity",
-                                                        engineCapacityType(),
-                                                        new Class<?>[]{},
+        constructor_default = new ConstructorWrapper<>(this,
+                                                        new Class<?>[]{
+                                                            String.class,
+                                                            yearType()
+                                                        },
                                                         "public");
 
-        isElectric =  new MethodWrapper<>(this,
-                                                "isElectric",
-                                                boolean.class,
-                                                new Class<?>[]{},
-                                                "public");
+        // Initialize Car-specific methods
+        getPriceMethod = new MethodWrapper<>(this,
+                                              "getPrice",
+                                              double.class,
+                                              new Class<?>[]{},
+                                              "public");
 
         // Initialize interface methods
-        startEngine =  new MethodWrapper<>(this,
-                                                 "startEngine",
-                                                 boolean.class,
-                                                 new Class<?>[]{},
-                                                 "public");
-
-        accelerate =  new MethodWrapper<>(this,
-                                                "accelerate",
-                                                void.class,
-                                                new Class<?>[]{double.class},
-                                                "public");
-
-        brake =  new MethodWrapper<>(this,
-                                           "brake",
+        startMethod = new MethodWrapper<>(this,
+                                           "start",
                                            void.class,
-                                           new Class<?>[]{double.class},
+                                           new Class<?>[]{},
                                            "public");
 
-        getCurrentSpeed =  new MethodWrapper<>(this,
-                                                      "getCurrentSpeed",
-                                                      speedType(),
-                                                      new Class<?>[]{},
-                                                      "public");
+        getSpeedMethod = new MethodWrapper<>(this,
+                                              "getSpeed",
+                                              speedType(),
+                                              new Class<?>[]{},
+                                              "public");
 
-        // Initialize overridden abstract methods
-        calculateFuelConsumption =  new MethodWrapper<>(this,
-                                                               "calculateFuelConsumption",
-                                                               calcReturnType(),
-                                                               new Class<?>[]{},
-                                                               "public");
+        // Initialize overridden methods
+        calculateCostMethod = new MethodWrapper<>(this,
+                                                   overwrittenMethod(),
+                                                   calcReturnType(),
+                                                   new Class<?>[]{},
+                                                   "public");
 
-        getMaxSpeed =  new MethodWrapper<>(this,
-                                                 "getMaxSpeed",
-                                                 speedType(),
-                                                 new Class<?>[]{},
-                                                 "public");
+        // Method overloading - same name, different parameters
+        calculateCostYearsMethod = new MethodWrapper<>(this,
+                                                        overwrittenMethod(),
+                                                        calcReturnType(),
+                                                        new Class<?>[]{int.class},
+                                                        "public");
 
-        getVehicleInfo =  new MethodWrapper<>(this,
-                                                    "getVehicleInfo",
-                                                    String.class,
-                                                    new Class<?>[]{},
-                                                    "public");
+        getInfoMethod = new MethodWrapper<>(this,
+                                             "getInfo",
+                                             String.class,
+                                             new Class<?>[]{},
+                                             "public");
     }
 
     @Override
     public Object getObj() {
         if (obj == null) {
             Assertions.assertThatCode(() -> {
-                obj = constructor_full.invoke("BMW", "M3", 2023, 4, "Petrol", 3.0);
+                obj = constructor_full.invoke("BMW", 2023, 30000.0);
             }).withFailMessage("Creating instances of class %s failed. Constructor may not be implemented correctly.",
                               concreteClass()).doesNotThrowAnyException();
         }

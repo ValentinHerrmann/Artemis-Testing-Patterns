@@ -1,73 +1,66 @@
 package de.tum.cit.aet.wrappers;
 
-import de.tum.cit.aet.levenshtein.ClassWrapper;
-import de.tum.cit.aet.levenshtein.MethodWrapper;
+import de.tum.cit.aet.levenshtein.*;
 import static de.tum.cit.aet.Constants.*;
+import static de.tum.cit.aet.TestSettings.BASE_PACKAGE;
 
+/**
+ * Wrapper for the Driveable interface.
+ * Simplified version matching the new example structure.
+ */
 public class DrivableWrapper<T> extends ClassWrapper<T> {
 
-    private final MethodWrapper<T,?> startEngine;
-    private final MethodWrapper<T,?> accelerate;
-    private final MethodWrapper<T,?> brake;
-    private final MethodWrapper<T,?> getCurrentSpeed;
+    private final AttributeWrapper<T, Double> maxSpeed;
+    private final MethodWrapper<T, Void> startMethod;
+    private final MethodWrapper<T, ?> getSpeedMethod;
 
-    public MethodWrapper<T,?> startEngine() { return startEngine; }
-    public MethodWrapper<T,?> accelerate() { return accelerate; }
-    public MethodWrapper<T,?> brake() { return brake; }
-    public MethodWrapper<T,?> getCurrentSpeed() { return getCurrentSpeed; }
+    public AttributeWrapper<T, Double> maxSpeed() {
+        return maxSpeed;
+    }
+
+    public MethodWrapper<T, Void> startMethod() {
+        return startMethod;
+    }
+
+    public MethodWrapper<T, ?> getSpeedMethod() {
+        return getSpeedMethod;
+    }
 
     public DrivableWrapper() {
-        super(
-            interfaceName(),    // without Constants Pattern: "Drivable"
-            "de.tum.cit.aet",
-            null,
-            null,
-            "public", "abstract", "interface"
-        );
+        super(interfaceName(),
+              BASE_PACKAGE,
+              null,
+              null,
+              "public", "abstract", "interface");
 
-        startEngine = new MethodWrapper<>(
-            this,
-            "startEngine",
-            boolean.class,
-            new Class[]{},
-            "public", "abstract"
-        );
+        // Interface constant
+        maxSpeed = new AttributeWrapper<>(this,
+                                           "MAX_SPEED",
+                                           double.class,
+                                           "public", "static", "final");
 
-        accelerate = new MethodWrapper<>(
-            this,
-            "accelerate",
-            void.class,
-            new Class[]{double.class},
-            "public", "abstract"
-        );
+        // Interface methods
+        startMethod = new MethodWrapper<>(this,
+                                           "start",
+                                           void.class,
+                                           new Class<?>[]{},
+                                           "public", "abstract");
 
-        brake = new MethodWrapper<>(
-            this,
-            "brake",
-            void.class,
-            new Class[]{double.class},
-            "public", "abstract"
-        );
-
-        getCurrentSpeed = new MethodWrapper<>(
-            this,
-            "getCurrentSpeed",
-            double.class,
-            new Class[]{},
-            "public", "abstract"
-        );
+        getSpeedMethod = new MethodWrapper<>(this,
+                                               "getSpeed",
+                                               speedType(),
+                                               new Class<?>[]{},
+                                               "public", "abstract");
     }
-
 
     private Object obj;
+
     @Override
-    public T getObj()
-    {
-        return (T)obj;
+    public Object getObj() {
+        return obj;
     }
 
-    public void setObj(T obj)
-    {
+    public void setObj(Object obj) {
         this.obj = obj;
     }
 }

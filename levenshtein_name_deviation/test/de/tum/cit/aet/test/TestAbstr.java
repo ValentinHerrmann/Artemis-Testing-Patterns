@@ -8,6 +8,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for the AbstractVehicle class.
+ * Simplified to match the new example structure.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestAbstr {
@@ -17,8 +18,8 @@ public class TestAbstr {
      */
     public static void testConstructorManufacturer() {
         Assertions.assertThatCode(() -> 
-            vehicleAbstr().constructor().invoke("Toyota", "Corolla", 2022))
-            .withFailMessage("Constructor of %s is not implemented correctly.", 
+            vehicleAbstr().constructor().invoke("Toyota", 2022))
+            .withFailMessage("Constructor of %s is not implemented correctly.",
                            vehicleAbstr().getExpectedName())
             .doesNotThrowAnyException();
         
@@ -30,47 +31,14 @@ public class TestAbstr {
     }
     
     /**
-     * Test that the constructor initializes the model attribute correctly.
-     */
-    public static void testConstructorModel() {
-        Object model = vehicleAbstr().model().getValue(vehicleAbstr().getObj());
-        Assertions.assertThat(model)
-            .withFailMessage("Value of attribute %s must be equal to the value passed in constructor.",
-                           vehicleAbstr().model().getExpectedName())
-            .isEqualTo("Corolla");
-    }
-    
-    /**
-     * Test that the constructor initializes the yearOfManufacture attribute correctly.
+     * Test that the constructor initializes the year attribute correctly.
      */
     public static void testConstructorYear() {
-        Object year = vehicleAbstr().yearOfManufacture().getValue(vehicleAbstr().getObj());
+        Object year = vehicleAbstr().year().getValue(vehicleAbstr().getObj());
         Assertions.assertThat((int)year)
             .withFailMessage("Value of attribute %s must be equal to the value passed in constructor.",
-                           vehicleAbstr().yearOfManufacture().getExpectedName())
+                           vehicleAbstr().year().getExpectedName())
             .isEqualTo(2022);
-    }
-    
-    /**
-     * Test that engineRunning is false initially.
-     */
-    public static void testEngineNotRunningInitially() {
-        Object engineRunning = vehicleAbstr().engineRunning().getValue(vehicleAbstr().getObj());
-        Assertions.assertThat((boolean)engineRunning)
-            .withFailMessage("Value of attribute %s must be false initially.",
-                           vehicleAbstr().engineRunning().getExpectedName())
-            .isFalse();
-    }
-    
-    /**
-     * Test that currentSpeed is 0 initially.
-     */
-    public static void testCurrentSpeedInitiallyZero() {
-        Object speed = vehicleAbstr().currentSpeed().getValue(vehicleAbstr().getObj());
-        Assertions.assertThat((double)speed)
-            .withFailMessage("Value of attribute %s must be 0.0 initially.",
-                           vehicleAbstr().currentSpeed().getExpectedName())
-            .isEqualTo(0.0, Assertions.within(0.001));
     }
     
     /**
@@ -85,36 +53,26 @@ public class TestAbstr {
     }
     
     /**
-     * Test getModel method.
+     * Test getYear method.
      */
-    public static void testGetModel() {
-        String model = vehicleAbstr().getModelMethod().invoke(vehicleAbstr().getObj());
-        Assertions.assertThat(model)
-            .withFailMessage("Method %s should return the model value.",
-                           vehicleAbstr().getModelMethod().getExpectedName())
-            .isEqualTo("Corolla");
-    }
-    
-    /**
-     * Test getYearOfManufacture method.
-     */
-    public static void testGetYearOfManufacture() {
-        Object year = vehicleAbstr().getYearOfManufactureMethod().invoke(vehicleAbstr().getObj());
+    public static void testGetYear() {
+        Object year = vehicleAbstr().getYearMethod().invoke(vehicleAbstr().getObj());
         Assertions.assertThat((int)year)
             .withFailMessage("Method %s should return the year value.",
-                           vehicleAbstr().getYearOfManufactureMethod().getExpectedName())
+                           vehicleAbstr().getYearMethod().getExpectedName())
             .isEqualTo(2022);
     }
     
     /**
-     * Test isEngineRunning method.
+     * Test getInfo method.
      */
-    public static void testIsEngineRunning() {
-        Boolean running = vehicleAbstr().isEngineRunningMethod().invoke(vehicleAbstr().getObj());
-        Assertions.assertThat(running)
-            .withFailMessage("Method %s should return false initially.",
-                           vehicleAbstr().isEngineRunningMethod().getExpectedName())
-            .isFalse();
+    public static void testGetInfo() {
+        String info = vehicleAbstr().getInfoMethod().invoke(vehicleAbstr().getObj());
+        Assertions.assertThat(info)
+            .withFailMessage("Method %s should return vehicle information.",
+                           vehicleAbstr().getInfoMethod().getExpectedName())
+            .isNotNull()
+            .contains("Toyota", "2022");
     }
 }
 

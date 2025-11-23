@@ -8,37 +8,57 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Tests for the Driveable interface.
+ * Simplified to match the new example structure.
  */
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestInterface {
 
-    private static AbstrWrapper<?> abstrWrap;
-    private static CarWrapper<?> carWrap;
-    private static DrivableWrapper<?> interfaceWrap;
-
-    public static void setAbstrWrap(AbstrWrapper<?> abstrWrap) {
-        TestInterface.abstrWrap = abstrWrap;
+    /**
+     * Test that the interface exists and is properly defined.
+     */
+    public static void testInterfaceExists() {
+        driveableInterface().verifyExistence(true);
     }
 
-    public static void setCarWrap(CarWrapper<?> carWrap) {
-        TestInterface.carWrap = carWrap;
+    /**
+     * Test MAX_SPEED constant.
+     */
+    public static void testMaxSpeedConstant() {
+        driveableInterface().maxSpeed().verifyExistence(true);
+
+        Object maxSpeed = driveableInterface().maxSpeed().getValue(null);
+        Assertions.assertThat((double)maxSpeed)
+            .withFailMessage("Interface constant %s should be 200.0",
+                           driveableInterface().maxSpeed().getExpectedName())
+            .isEqualTo(200.0, Assertions.within(0.001));
     }
 
-    public static void setInterfaceWrap(DrivableWrapper<?> interfaceWrap) {
-        TestInterface.interfaceWrap = interfaceWrap;
+    /**
+     * Test start method signature.
+     */
+    public static void testStartMethodExists() {
+        driveableInterface().startMethod().verifyExistence(true);
+    }
+
+    /**
+     * Test getSpeed method signature.
+     */
+    public static void testGetSpeedMethodExists() {
+        driveableInterface().getSpeedMethod().verifyExistence(true);
     }
 
     /**
      * Test that Car implements Driveable interface.
      */
     public static void testCarImplementsInterface() {
-        carWrap.verifyInterfaces();
-        Assertions.assertThat(carWrap.getClazz().getInterfaces())
+        carImpl().verifyInterfaces();
+        Assertions.assertThat(carImpl().getClazz().getInterfaces())
             .withFailMessage("Class %s must implement interface %s.",
-                           carWrap.getExpectedName(),
-                           interfaceWrap.getExpectedName())
+                           carImpl().getExpectedName(),
+                           driveableInterface().getExpectedName())
             .anySatisfy(iface ->
                 Assertions.assertThat(iface.getSimpleName())
-                    .isEqualTo(interfaceWrap.getExpectedName())
+                    .isEqualTo(driveableInterface().getExpectedName())
             );
     }
 }
