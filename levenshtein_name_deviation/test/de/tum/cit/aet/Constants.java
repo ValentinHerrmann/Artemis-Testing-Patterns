@@ -13,51 +13,75 @@ public class Constants {
     }
 
     public static String abstractClass(){
-        return "AbstractVehicle";
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "AbstractVehicle";
+        };
     }
 
     public static String concreteClass(){
-        return "Car";
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "Car";
+        };
     }
 
     public static String concreteClassAttribute() {
-        return "numberOfDoors";
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "numberOfDoors";
+        };
     }
 
     public static String interfaceName(){
-        return "Driveable";
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "Driveable";
+        };
     }
 
     public static String overwrittenMethod() {
-        return "calculateFuelConsumption";
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "calculateFuelConsumption";
+        };
     }
 
     public static String abstractClassAttribute() {
-        return "manufacturer";
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "manufacturer";
+        };
     }
 
     public static String interfaceMethod() {
-        return "startEngine";
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "startEngine";
+        };
     }
 
     public static Class<?> yearType() {
-        return int.class;
+        return switch (TestSettings.variant) {
+            case DEFAULT -> int.class;
+        };
     }
 
     public static Class<?> speedType() {
-        return double.class;
+        return switch (TestSettings.variant) {
+            case DEFAULT -> double.class;
+        };
     }
 
     public static Class<?> doorType() {
-        return int.class;
+        return switch (TestSettings.variant) {
+            case DEFAULT -> int.class;
+        };
     }
 
     public static Class<?> engineCapacityType() {
-        return double.class;
+        return switch (TestSettings.variant) {
+            case DEFAULT -> double.class;
+        };
     }
 
     public static Class<?> calcReturnType() {
-        return double.class;
+        return switch (TestSettings.variant) {
+            case DEFAULT -> double.class;
+        };
     }
 
 
