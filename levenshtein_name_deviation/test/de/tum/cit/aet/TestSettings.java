@@ -1,5 +1,7 @@
 package de.tum.cit.aet;
 
+import java.lang.management.ManagementFactory;
+
 public class TestSettings
 {
     static final String SHOW_HIDDEN_AFTER = "2025-12-02 23:59 Europe/Berlin";
@@ -8,6 +10,17 @@ public class TestSettings
     static Constants.Variant variant = Constants.Variant.DEFAULT;
 
     public static final String BASE_PACKAGE = "de.tum.cit.aet";
+
+    /**
+     * Enable debugging mode for tests. When set to true, tests will
+     * have extended timeouts.
+     */
+    public static final boolean DEBUGGING = false;
+
+    /**
+     * Timeout value in seconds for tests.
+     */
+    public static final int TIMEOUT_SECONDS = DEBUGGING ? 300 : 3;
 
     /**
      * Maximum allowed deviation (as a percentage) for class name matching.

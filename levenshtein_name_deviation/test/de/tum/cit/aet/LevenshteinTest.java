@@ -6,10 +6,12 @@ import de.tum.cit.aet.levenshtein.*;
 //import de.tum.cit.aet.wrappers.InterfaceWrapper;
 import de.tum.in.test.api.*;
 import de.tum.in.test.api.jupiter.Hidden;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static de.tum.cit.aet.TestSettings.TIMEOUT_SECONDS;
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -39,7 +41,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Deadline(TestSettings.SHOW_HIDDEN_AFTER)
 @ActivateHiddenBefore(TestSettings.SHOW_HIDDEN_BEFORE)
 @MirrorOutput
-//@StrictTimeout(3)
+@StrictTimeout(TIMEOUT_SECONDS)
 @Retention(RUNTIME)
 @Target({TYPE, ANNOTATION_TYPE})
 public @interface LevenshteinTest
