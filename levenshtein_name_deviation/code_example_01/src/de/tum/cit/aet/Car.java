@@ -1,127 +1,69 @@
 package de.tum.cit.aet;
 
 /**
- * Concrete implementation of a Car that extends AbstractVehicle and implements Driveable.
- * Demonstrates implementation testing with Levenshtein pattern including:
- * - Inheritance from abstract class
- * - Interface implementation
- * - Constructor with multiple parameters
- * - Method overriding
- * - State management
+ * Concrete Car implementation.
+ * Demonstrates:
+ * - Inheritance from abstract class (AbstractVehicle)
+ * - Interface implementation (Driveable)
+ * - Method overriding (calculateCost, getInfo, start, getSpeed)
+ * - Method overloading (calculateCost with different parameters)
+ * - Constructor overloading (two constructors)
  */
 public class Car extends AbstractVehicle implements Driveable {
 
-    private int numberOfDoors;
-    private String fuelType;
-    private double engineCapacity;
-    private double maxSpeed;
-    private double fuelConsumptionRate;
+    private double price;
+    private double speed;
 
     /**
-     * Constructor for Car.
-     * @param manufacturer the car manufacturer
-     * @param model the car model
-     * @param yearOfManufacture the year of manufacture
-     * @param numberOfDoors the number of doors
-     * @param fuelType the type of fuel (e.g., "Petrol", "Diesel", "Electric")
-     * @param engineCapacity the engine capacity in liters
+     * Constructor 1 - Constructor overloading demonstration.
      */
-    public Car(String manufacturer, String model, int yearOfManufacture,
-               int numberOfDoors, String fuelType, double engineCapacity) {
-        super(manufacturer, model, yearOfManufacture);
-        this.numberOfDoors = numberOfDoors;
-        this.fuelType = fuelType;
-        this.engineCapacity = engineCapacity;
-        this.maxSpeed = calculateMaxSpeedFromEngine();
-        this.fuelConsumptionRate = engineCapacity * 4.5; // Simplified calculation
+    public Car(String manufacturer, int year, double price) {
+        super(manufacturer, year);
+        this.price = price;
+        this.speed = 0.0;
     }
 
     /**
-     * Gets the number of doors.
-     * @return the number of doors
+     * Constructor 2 - Constructor overloading demonstration.
      */
-    public int getNumberOfDoors() {
-        return numberOfDoors;
+    public Car(String manufacturer, int year) {
+        this(manufacturer, year, 20000.0); // Calls other constructor
     }
 
     /**
-     * Gets the fuel type.
-     * @return the fuel type
+     * Gets the price.
      */
-    public String getFuelType() {
-        return fuelType;
+    public double getPrice() {
+        return price;
     }
 
-    /**
-     * Gets the engine capacity.
-     * @return the engine capacity in liters
-     */
-    public double getEngineCapacity() {
-        return engineCapacity;
-    }
-
+    // Method overriding - implements abstract method from AbstractVehicle
     @Override
-    public boolean startEngine() {
-        if (!engineRunning) {
-            engineRunning = true;
-            return true;
-        }
-        return false;
+    public double calculateCost() {
+        return price * 0.1; // Annual cost is 10% of price
     }
 
+    // Method overloading - same name, different parameters
+    public double calculateCost(int years) {
+        return price * 0.1 * years;
+    }
+
+    // Method overriding - overrides concrete method from AbstractVehicle
     @Override
-    public void accelerate(double speedIncrease) {
-        if (engineRunning && speedIncrease > 0) {
-            currentSpeed = Math.min(currentSpeed + speedIncrease, maxSpeed);
-        }
+    public String getInfo() {
+        return super.getInfo() + " - $" + price;
     }
 
+    // Interface implementation - implements method from Driveable
     @Override
-    public void brake(double brakingForce) {
-        if (brakingForce >= 0.0 && brakingForce <= 1.0) {
-            double speedDecrease = currentSpeed * brakingForce * 0.5;
-            currentSpeed = Math.max(0, currentSpeed - speedDecrease);
-        }
+    public void start() {
+        this.speed = 10.0;
     }
 
+    // Interface implementation - implements method from Driveable
     @Override
-    public double getCurrentSpeed() {
-        return currentSpeed;
-    }
-
-    @Override
-    public double calculateFuelConsumption() {
-        // Simplified: base consumption + speed factor
-        double speedFactor = currentSpeed / 100.0;
-        return fuelConsumptionRate * (1.0 + speedFactor * 0.3);
-    }
-
-    @Override
-    public double getMaxSpeed() {
-        return maxSpeed;
-    }
-
-    /**
-     * Calculates maximum speed based on engine capacity.
-     * @return calculated max speed in km/h
-     */
-    private double calculateMaxSpeedFromEngine() {
-        // Simplified formula: larger engines typically allow higher speeds
-        return 120 + (engineCapacity * 30);
-    }
-
-    /**
-     * Checks if the car is electric.
-     * @return true if fuel type is electric
-     */
-    public boolean isElectric() {
-        return "Electric".equalsIgnoreCase(fuelType);
-    }
-
-    @Override
-    public String getVehicleInfo() {
-        return String.format("%s - %d doors, %s, %.1fL engine",
-                           super.getVehicleInfo(), numberOfDoors, fuelType, engineCapacity);
+    public double getSpeed() {
+        return speed;
     }
 }
 

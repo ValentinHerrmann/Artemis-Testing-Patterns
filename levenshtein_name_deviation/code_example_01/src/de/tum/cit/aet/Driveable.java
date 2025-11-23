@@ -2,32 +2,21 @@ package de.tum.cit.aet;
 
 /**
  * Interface for driveable vehicles.
- * Demonstrates interface testing with Levenshtein pattern.
+ * Demonstrates: Interface constants and method declarations.
  */
 public interface Driveable {
     
+    // Interface constant (public static final by default)
+    double MAX_SPEED = 200.0;
+
     /**
      * Starts the vehicle's engine.
-     * @return true if engine started successfully
      */
-    boolean startEngine();
-    
-    /**
-     * Accelerates the vehicle.
-     * @param speedIncrease the amount to increase speed by
-     */
-    void accelerate(double speedIncrease);
-    
-    /**
-     * Applies the brakes.
-     * @param brakingForce the force to apply (0.0 to 1.0)
-     */
-    void brake(double brakingForce);
-    
+    void start();
+
     /**
      * Gets the current speed.
-     * @return the current speed in km/h
      */
-    double getCurrentSpeed();
+    double getSpeed();
 }
 

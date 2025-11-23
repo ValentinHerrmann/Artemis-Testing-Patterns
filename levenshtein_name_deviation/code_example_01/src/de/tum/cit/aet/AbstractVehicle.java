@@ -2,80 +2,45 @@ package de.tum.cit.aet;
 
 /**
  * Abstract base class for all vehicles.
- * Demonstrates abstract class testing with Levenshtein pattern.
+ * Demonstrates: Abstract class, abstract methods, inheritance.
  */
 public abstract class AbstractVehicle {
     
     protected String manufacturer;
-    protected String model;
-    protected int yearOfManufacture;
-    protected double currentSpeed;
-    protected boolean engineRunning;
-    
+    protected int year;
+
     /**
      * Constructor for AbstractVehicle.
-     * @param manufacturer the vehicle manufacturer
-     * @param model the vehicle model
-     * @param yearOfManufacture the year the vehicle was manufactured
      */
-    public AbstractVehicle(String manufacturer, String model, int yearOfManufacture) {
+    public AbstractVehicle(String manufacturer, int year) {
         this.manufacturer = manufacturer;
-        this.model = model;
-        this.yearOfManufacture = yearOfManufacture;
-        this.currentSpeed = 0.0;
-        this.engineRunning = false;
+        this.year = year;
     }
     
     /**
-     * Gets the manufacturer name.
-     * @return the manufacturer
+     * Gets the manufacturer.
      */
     public String getManufacturer() {
         return manufacturer;
     }
     
     /**
-     * Gets the model name.
-     * @return the model
+     * Gets the year.
      */
-    public String getModel() {
-        return model;
+    public int getYear() {
+        return year;
     }
     
     /**
-     * Gets the year of manufacture.
-     * @return the year
+     * Abstract method to be implemented by subclasses.
      */
-    public int getYearOfManufacture() {
-        return yearOfManufacture;
-    }
-    
+    public abstract double calculateCost();
+
     /**
-     * Checks if the engine is running.
-     * @return true if engine is running
+     * Concrete method that can be overridden.
      */
-    public boolean isEngineRunning() {
-        return engineRunning;
-    }
-    
-    /**
-     * Abstract method to calculate fuel consumption.
-     * @return fuel consumption in liters per 100km
-     */
-    public abstract double calculateFuelConsumption();
-    
-    /**
-     * Abstract method to get the maximum speed.
-     * @return maximum speed in km/h
-     */
-    public abstract double getMaxSpeed();
-    
-    /**
-     * Gets vehicle information as string.
-     * @return formatted vehicle information
-     */
-    public String getVehicleInfo() {
-        return String.format("%s %s (%d)", manufacturer, model, yearOfManufacture);
+    public String getInfo() {
+        return manufacturer + " (" + year + ")";
     }
 }
 
