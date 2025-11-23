@@ -45,14 +45,14 @@ public class DrivableWrapper<T> extends ClassWrapper<T> {
             this,
             "brake",
             void.class,
-            new Class[]{},
+            new Class[]{double.class},
             "public", "abstract"
         );
 
         getCurrentSpeed = new MethodWrapper<>(
             this,
             "getCurrentSpeed",
-            Double.class,
+            double.class,
             new Class[]{},
             "public", "abstract"
         );
