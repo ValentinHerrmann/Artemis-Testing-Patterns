@@ -26,7 +26,7 @@ public class Constants {
 
     public static String concreteClassAttribute() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> "numberOfDoors";
+            case DEFAULT -> "price"; // Original: "numberOfDoors"
         };
     }
 
@@ -38,7 +38,7 @@ public class Constants {
 
     public static String overwrittenMethod() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> "calculateFuelConsumption";
+            case DEFAULT -> "calculateCost"; // Original: "calculateFuelConsumption"
         };
     }
 
@@ -50,37 +50,96 @@ public class Constants {
 
     public static String interfaceMethod() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> "startEngine";
+            case DEFAULT -> "start"; // Original: "startEngine"
         };
     }
 
+    // ============================================================================
+    // Attribute Name Constants
+    // ============================================================================
+
+    public static String yearAttribute() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "year";
+        };
+    }
+
+    public static String speedAttribute() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "speed";
+        };
+    }
+
+    public static String maxSpeedConstant() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "MAX_SPEED";
+        };
+    }
+
+    // ============================================================================
+    // Method Name Constants
+    // ============================================================================
+
+    public static String getManufacturerMethodName() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "getManufacturer";
+        };
+    }
+
+    public static String getYearMethodName() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "getYear";
+        };
+    }
+
+    public static String getPriceMethodName() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "getPrice";
+        };
+    }
+
+    public static String getSpeedMethodName() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> "getSpeed";
+        };
+    }
+
+    // ============================================================================
+    // Type Constants
+    // ============================================================================
     public static Class<?> yearType() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> int.class;
+            case DEFAULT -> int.class; // Used in: AbstractVehicle.year, Constructor parameter
         };
     }
 
     public static Class<?> speedType() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> double.class;
+            case DEFAULT -> double.class; // Used in: Car.speed, Driveable.getSpeed(), Car.getSpeed()
         };
     }
 
-    public static Class<?> doorType() {
+    public static Class<?> priceType() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> int.class;
+            case DEFAULT -> double.class; // Used in: Car.speed, Driveable.getSpeed(), Car.getSpeed()
         };
     }
 
-    public static Class<?> engineCapacityType() {
+    public static Class<?> manufacturerType() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> double.class;
+            case DEFAULT -> String.class; // Used in: AbstractVehicle.manufacturer, AbstractVehicle.getManufacturer()
+        };
+    }
+
+    public static Class<?> startRetType() {
+        return switch (TestSettings.variant) {
+            case DEFAULT -> void.class; // Used in: Driveable.start()
         };
     }
 
     public static Class<?> calcReturnType() {
         return switch (TestSettings.variant) {
-            case DEFAULT -> double.class;
+            case DEFAULT -> double.class; // Used in: AbstractVehicle.calculateCost(), Car.calculateCost()
         };
     }
 
@@ -132,5 +191,4 @@ public class Constants {
             throw new RuntimeException(e);
         }
     }
-
 }
