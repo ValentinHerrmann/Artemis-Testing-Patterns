@@ -2,15 +2,23 @@ package de.tum.cit.aet.levenshtein;
 
 import de.tum.cit.aet.TestSettings;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
 
+import static de.tum.cit.aet.Constants.abstractClass;
+import static de.tum.cit.aet.levenshtein.LevenshteinUtils.saveCast;
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 import static de.tum.cit.aet.levenshtein.LevenshteinUtils.levenshteinDistance;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 
 public abstract class ClassWrapper<T> extends Wrapper<T>
@@ -28,6 +36,9 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         this.superClassWrapper = new WrapperProperty<>(superClassWrapper);
         this.interfaceWrappers = new WrapperProperty<>(interfaceWrappers == null ? new ClassWrapper<?>[0] : interfaceWrappers);
     }
+    public ClassWrapper(String expectedName, String expectedPackage, String... modifiers) {
+        this(expectedName, expectedPackage, null, null, modifiers);
+    }
 
     @Override
     public void verifyExistence(boolean throwAssertion)
@@ -41,15 +52,83 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         return clazz;
     }
 
-    public abstract Object getObj();
+    @SuppressWarnings("unchecked")
+    public Object getDynamicSubclassObj(Class<?>[] constructorParamTypes, Object... constructorArgs) {
+        Object dynObj = null;
+        try {
+            // Use ByteBuddy to create a concrete subclass of the abstract class
+            Class<?> dynamicType = new ByteBuddy()
+                    .subclass(getClazz())
+                    .make()
+                    .load(getClazz().getClassLoader(), ClassLoadingStrategy.Default.WRAPPER)
+                    .getLoaded();
+
+            // Instantiate the dynamic subclass with constructor arguments
+            java.lang.reflect.Constructor<?> ctor = dynamicType.getConstructor(constructorParamTypes);
+        dynObj = (T)ctor.newInstance(constructorArgs);
+        }
+        catch (AssertionError e) {  fail(e.getMessage()); }
+        catch (Throwable e) {
+            String errorMsg = e.getMessage() != null ? e.getMessage() : e.getClass().getName();
+            if (e.getCause() != null && e.getCause().getMessage() != null) {
+                errorMsg += " (Cause: " + e.getCause().getMessage() + ")";
+            }
+            fail("Creating instances of a subclass of %s failed. Constructor may not be implemented correctly. " +
+                            "This might also cause subsequent tests to fail. Error: %s",
+                    abstractClass(), errorMsg);
+
+        }
+        return dynObj;
+    }
+
+    /**
+    * Returns an instance of the class represented by this ClassWrapper.
+    * Should usually be overridden in concrete wrapper subclasses by calling getObj(constructor, constructorArgs).
+     * @param useByteBuddy whether to use ByteBuddy to create a dynamic subclass instance (set to false for private elements!)
+     */
+    public abstract Object getObj(boolean forceNew, boolean useByteBuddy);
+
+    public Object getObj(boolean useByteBuddy) {
+        return getObj(false, useByteBuddy);
+    }
+
+    @SuppressWarnings("unchecked")
+    public T getObj(boolean forceNew, boolean useByteBuddy, ConstructorWrapper<?> constructorWrapper, Object... constructorArgs) {
+        if (obj == null || forceNew) {
+            if(useByteBuddy) {
+                Class<?>[] types = new Class<?>[0];
+                if(constructorWrapper != null) {
+                    types = constructorWrapper.getParamTypes();
+                }
+                Object dynObj = getDynamicSubclassObj(types, constructorArgs);
+                obj = (T)saveCast(dynObj, getClazz());
+            }
+            else {
+                if(Modifier.isAbstract(clazz.getModifiers())) {
+                    fail(String.format("Cannot instantiate abstract class %s directly.\n" +
+                            "This may lead subsequent tests to fail.", name.actual));
+                }
+                if(Modifier.isInterface(clazz.getModifiers())) {
+                    fail(String.format("Cannot instantiate interface %s directly.\n" +
+                            "This may lead subsequent tests to fail.", name.actual));
+                }
+                Assertions.assertThatCode(() -> {
+                    obj = (T)constructorWrapper.invoke(constructorArgs);
+                }).withFailMessage("Creating instances of class %s failed. Constructor may not be implemented correctly.\n" +
+                                "This may lead subsequent tests to fail.",
+                            name.expected).doesNotThrowAnyException();
+                return obj;
+            }
+        }
+        return obj;
+    }
 
     /**
      * Attempts to find a class in the package for class validation tests,
      * using TestSettings.CLASS_NAME_DEVIATION_THRESHOLD.
      */
     @Override @SuppressWarnings("unchecked")
-    protected void findWithDeviation()
-    {
+    protected void findWithDeviation() {
         // First try exact match
         try {
             clazz = (Class<T>)Class.forName(expectedPackage + "." + name.expected);
@@ -324,10 +403,30 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         parseExistence();
         String intro = switch (existence) {
             case EXACT -> "✅ ";
-            case DEVIATES -> "⚠️ DEVIATION ⚠️ \nIf possible actual will be used for further testing";
-            case MISSING -> "❌ MISSING ❌";
+            case DEVIATES -> "!! DEVIATION !! \nIf possible actual will be used for further testing";
+            case MISSING -> "X MISSING X";
             default -> "Existence unchecked.";
         } + " in package %s".formatted(expectedPackage);
         return String.format("%s\nExpect:\t%s\nActual:\t%s", intro, expectedToString(), actualToString());
+    }
+
+    public void testGetter(AttributeWrapper<?,?> attribute, MethodWrapper<?,?> getter)  {
+        attribute.verifyExistence(true);
+        getter.verifyExistence(true);
+
+
+        boolean useByteBuddy = !attribute.modifiers.actual.contains("private")
+                && !getter.modifiers.actual.contains("private");
+
+        Object obj = getObj(useByteBuddy);
+        Object expected = attribute.getValue(obj);
+        Object actual = getter.invokeOnSpecificObject(obj);
+
+        assertThat(expected).isEqualTo(actual).withFailMessage(
+            "Getter '%s' does not return the attribute's value.\nExpected: %s\nActual: %s",
+            getter.actualToString(),
+            expected.toString(),
+            actual != null ? actual.toString() : "null"
+        );
     }
 }

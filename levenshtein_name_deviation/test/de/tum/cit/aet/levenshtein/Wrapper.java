@@ -26,7 +26,7 @@ public abstract class Wrapper<T>
 
     public void verifyExistence(boolean throwAssertion)
     {
-        verifyExistence(String.format("Element %s in class %s is not implemented as expected.", name.expected, getParentClassWrapper().name.expected),throwAssertion);
+        verifyExistence(String.format("Element %s in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", name.expected, getParentClassWrapper().name.expected),throwAssertion);
     }
 
     protected void verifyExistence(String failMessage, boolean throwAssertion)
@@ -78,7 +78,7 @@ public abstract class Wrapper<T>
                                     !Modifier.isPrivate(modifierBitmask) &&
                                     !Modifier.isProtected(modifierBitmask))
                                 ? worst : selectWorstExistence(worst, DEVIATES);
-                default -> Logging.logWarning(String.format("Unknown modifier %s in expected modifiers.", modifier));
+                default -> throw new RuntimeException("Unknown modifier: " + modifier);
             }
         }
         modifiers.existence = worst;
@@ -138,16 +138,10 @@ public abstract class Wrapper<T>
     {
         parseExistence();
         return switch (existence) {
-            case EXACT -> String.format(
-                    """
-                    ✅ CORRECT in %s ✅
-                    Expect = Actual:\t%s
-                    """,
-                    getParentClassWrapper().name.expected, expectedToString()
-            );
+            case EXACT -> expectedToString();
             case DEVIATES -> String.format(
                     """
-                    ⚠️ DEVIATION in %s ⚠️
+                    !! DEVIATION in %s !!
                     If possible actual will be used for further testing.
                     Expect:\t%s
                     Actual:\t%s
@@ -156,12 +150,19 @@ public abstract class Wrapper<T>
             );
             case MISSING -> String.format(
                     """
-                    ❌️ MISSING in %s ❌️
+                    X MISSING in %s X
                     Expect:\t%s
                     """,
                     getParentClassWrapper().name.expected, expectedToString()
             );
-            default -> "Existence unchecked.";
+            case UNCHECKED -> String.format(
+                    """
+                    ❓ UNCHECKED in %s ❓
+                    Expect:\t%s
+                    """,
+                    getParentClassWrapper().name.expected, expectedToString()
+            );
+            default -> throw new RuntimeException("Unknown existence: " + existence);
         };
     }
     public abstract String expectedToString();
@@ -177,29 +178,5 @@ public abstract class Wrapper<T>
         return name.expected;
     }
 
-    public Object saveCast(Object val, Class<?> castTo) {
-        if(val == null) {
-            return null;
-        }
-        if(castTo.isInstance(val)) {
-            return val;
-        }
-        if(val instanceof Number) {
-            Number n = (Number) val;
-            if(castTo == Integer.class || castTo == int.class) {
-                return n.intValue();
-            }
-            else if(castTo == Long.class || castTo == long.class) {
-                return n.longValue();
-            }
-            else if(castTo == Float.class || castTo == float.class) {
-                return n.floatValue();
-            }
-            else if(castTo == Double.class || castTo == double.class) {
-                return n.doubleValue();
-            }
-        }
-        Logging.logWarning(String.format("Cannot cast value %s of type %s to type %s", val, val.getClass().getName(), castTo.getName()));
-        return val;
-    }
+
 }

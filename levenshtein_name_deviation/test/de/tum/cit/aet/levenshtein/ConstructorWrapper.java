@@ -23,8 +23,15 @@ public class ConstructorWrapper<T> extends Wrapper<T>
         this.paramTypes = paramTypes;
     }
 
+    public ConstructorWrapper(ClassWrapper<T> parentClass, String modifiers) {
+        this(parentClass, new Class<?>[] {}, modifiers);
+    }
+
     @Override
     public void verifyExistence(boolean throwAssertion) {
+        /* Not sure why that was there. Does not seem to make sense.
+        var mod = getParentClassWrapper().modifiers.expected;
+        var actMod = Modifier.toString(getParentClassWrapper().getClazz().getModifiers());
         if (Arrays.asList(getParentClassWrapper().modifiers.expected.split(" ")).contains("abstract")  &&
                 Modifier.isAbstract(getParentClassWrapper().getClazz().getModifiers()))
         {
@@ -32,8 +39,9 @@ public class ConstructorWrapper<T> extends Wrapper<T>
         }
         else
         {
-            super.verifyExistence(String.format("Constructor %s in class %s is not implemented as expected.", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
-        }
+        */
+            super.verifyExistence(String.format("Constructor '%s' in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
+        //}
     }
 
     @Override
@@ -43,27 +51,53 @@ public class ConstructorWrapper<T> extends Wrapper<T>
         Class<T> clazz = parentClassWrapper.getClazz();
         if(clazz != null) {
             constructor = ReflectionTestUtils.getConstructor(clazz, paramTypes);
+            // Falls nicht gefunden, versuche mit konvertierten Wrapper-Typen
+            if(constructor == null) {
+                Class<?>[] wrapperTypes = new Class<?>[paramTypes.length];
+                for(int i = 0; i < paramTypes.length; i++) {
+                    wrapperTypes[i] = toWrapperType(paramTypes[i]);
+                }
+                constructor = ReflectionTestUtils.getConstructor(clazz, wrapperTypes);
+            }
         }
-        existence = constructor == null ? MISSING : EXACT;
+        if(constructor != null) {
+            this.existence = EXACT;
+        }
+        else {
+            this.existence = MISSING;
+        }
+    }
+
+    private Class<?> toWrapperType(Class<?> type) {
+        if(type == int.class) return Integer.class;
+        if(type == long.class) return Long.class;
+        if(type == double.class) return Double.class;
+        if(type == float.class) return Float.class;
+        if(type == boolean.class) return Boolean.class;
+        if(type == short.class) return Short.class;
+        if(type == byte.class) return Byte.class;
+        if(type == char.class) return Character.class;
+        return type;
     }
 
     @SuppressWarnings("unchecked")
     public T invoke(Object... args)
     {
         verifyExistence(true);
-        Object[] res = new Object[1];
         try { constructor.setAccessible(true); } catch (Exception e) { /*Ignore*/ }
-        Assertions.assertThatCode(() -> {
-            res[0] = constructor.newInstance(args);
-        }).doesNotThrowAnyException();
-        if (res[0] == null) {
-           return null; 
-        }
-        else {
 
-            getParentClassWrapper().obj = (T)(res[0]);
-            return (T)res[0];
+        try {
+            if(getParentClassWrapper().modifiers.actual.contains("abstract")) {
+                return (T)getParentClassWrapper().getObj(true,true,this,args);
+            }
+            else {
+                return (T) ReflectionTestUtils.newInstance(constructor, args);
+            }
         }
+        catch (Exception e) {
+            Assertions.fail(String.format("Failed to invoke constructor '%s' in class %s: %s", this.expectedToString(), getParentClassWrapper().name.expected, e.getMessage()));
+        }
+        return null;
     }
 
     protected void parseExistence() {
@@ -78,7 +112,7 @@ public class ConstructorWrapper<T> extends Wrapper<T>
                 "%s %s(%s)",
                 modifiers.expected,
                 getParentClassWrapper().name.expected,
-                Arrays.stream(paramTypes).map(Class::toString).collect(Collectors.joining(", "))
+                Arrays.stream(paramTypes).map(Class::getSimpleName).collect(Collectors.joining(", "))
         );
     }
 
@@ -91,7 +125,11 @@ public class ConstructorWrapper<T> extends Wrapper<T>
                 "%s %s(%s)",
                 modifiers.actual,
                 getParentClassWrapper().name.actual,
-                Arrays.stream(paramTypes).map(Class::toString).collect(Collectors.joining(", "))
+                Arrays.stream(paramTypes).map(Class::getSimpleName).collect(Collectors.joining(", "))
         );
+    }
+
+    public Class<?>[] getParamTypes() {
+        return paramTypes;
     }
 }

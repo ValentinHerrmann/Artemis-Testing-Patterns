@@ -10,14 +10,14 @@ public class GenericClassWrapper<T> extends ClassWrapper<T>{
 
     private final Class<T> clazz;
     public GenericClassWrapper(Class<T> clz) {
-        super(clz.getSimpleName(), clz.getPackageName(), null, null, Modifier.toString(clz.getModifiers()));
+        super(clz.getSimpleName(), clz.getPackageName(), Modifier.toString(clz.getModifiers()));
         this.clazz = clz;
     }
     public Class<T> getClazz() {
         return clazz;
     }
     @Override
-    public Object getObj() {
+    public Object getObj(boolean forceNew, boolean useByteBuddy) {
         return null;
     }
 }

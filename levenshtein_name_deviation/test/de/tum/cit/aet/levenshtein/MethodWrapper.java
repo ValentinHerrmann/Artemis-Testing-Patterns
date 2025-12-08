@@ -2,13 +2,17 @@ package de.tum.cit.aet.levenshtein;
 
 
 import de.tum.cit.aet.TestSettings;
+import de.tum.in.test.api.util.ReflectionTestUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.isNameWithinDeviation;
+import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 public class MethodWrapper<T, R> extends Wrapper<T>
@@ -24,10 +28,14 @@ public class MethodWrapper<T, R> extends Wrapper<T>
         this.returnType = new WrapperProperty<>(expectedReturnType);
     }
 
+    public MethodWrapper(ClassWrapper<T> parentClass, String expectedName, Class<R> expectedReturnType, String... modifiers) {
+        this(parentClass, expectedName, expectedReturnType, new Class<?>[0], modifiers);
+    }
+
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("Method %s in class %s is not implemented as expected.", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
+        super.verifyExistence(String.format("Method %s in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
     }
 
     @Override
@@ -82,10 +90,15 @@ public class MethodWrapper<T, R> extends Wrapper<T>
         parseExistence(name, returnType, modifiers);
     }
 
-    @SuppressWarnings("unchecked") // is checked at runtime
+    /**
+     * Invokes the method on the classes getObj()  (or if static using null as object).
+     * {@param params} Values for the methods parameters.
+     * @return The return value of the method, save-cast to R.
+     */
+    @SuppressWarnings("unchecked")
     public R invoke(Object... params)
     {
-        Object val = invoke(null, params);
+        Object val = invokeOnSpecificObject(null, params);
         if(val == null) {
             return null;
         }
@@ -94,31 +107,37 @@ public class MethodWrapper<T, R> extends Wrapper<T>
         }
     }
 
-    @SuppressWarnings("unchecked") // is checked at runtime
-    public R invoke(ClassWrapper<?> objWrapper, Object... params)
+    /**
+     *
+     * @param objWrapper The object to invoke the method on. If null, uses getObj() of the parent class (or null for static methods).
+     * {@param params} Values for the methods parameters.
+     * @return The return value of the method, save-cast to R.
+     */
+    @SuppressWarnings("unchecked")
+    public R invokeOnSpecificObject(Object obj, Object... params)
     {
         verifyExistence(true);
-        Object[] result = new Object[1];
-        assertThatCode(() -> {
-            Object obj;
-            if (objWrapper != null)
-            {
-                obj = objWrapper.getObj();
-            }
-            else
-            {
-                obj = Arrays.asList(modifiers.actual.split(" ")).contains("static") ? null : getParentClassWrapper().getObj();
-            }
-            try
-            {
-                method.setAccessible(true);
-            }
-            catch (Exception e) { /*Ignore*/ }
+        try {
+            boolean useByteBuddy = !Modifier.isPrivate(method.getModifiers());
+            boolean stat = Modifier.isStatic(method.getModifiers());
 
-            result[0] = method.invoke(obj, params);
-        }).withFailMessage("Calling method %s on class %s threw an exception.",toString(), getParentClassWrapper().name.expected)
-        .doesNotThrowAnyException();
-        return (R)result[0];
+            if(obj == null) {
+                obj = stat ? null : getParentClassWrapper().getObj(useByteBuddy);
+            }
+            try {
+                method.setAccessible(true);
+            } catch (Exception e) { /*Ignore*/ }
+
+            Object val = ReflectionTestUtils.invokeMethod(obj, method, params);
+            if(val == null) {
+                return null;
+            }
+            return (R)saveCast(val, returnType.expected);
+        }
+        catch(Exception e) {
+            fail("Calling method '%s' on class '%s' threw an exception.",actualToString(), getParentClassWrapper().name.expected);
+        }
+        return null;
     }
 
     @Override

@@ -2,21 +2,38 @@ package de.tum.cit.aet.levenshtein;
 
 import de.tum.cit.aet.TestSettings;
 import de.tum.in.test.api.util.ReflectionTestUtils;
+import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
 
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.isNameWithinDeviation;
+import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
+import static org.assertj.core.api.Assertions.fail;
+
 
 public class AttributeWrapper<T, V> extends Wrapper<T>
 {
+
+    /**
+     * The field representing the detected attribute in the class.
+     */
     private Field field;
+    /**
+    * Just here to determine generic type V. Not used for anything else.
+     * Use {@link AttributeWrapper#type} to get the expected type.
+    */
     private final Class<V> expectedType;
+
+    /**
+     * Stored expected and actual type of attribute and
+     * information about its existence.
+     */
     private final WrapperProperty<Class<?>> type;
 
 
@@ -31,7 +48,7 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("Attribute %s in class %s is not implemented as expected.", name.expected, getParentClassWrapper().name.expected),throwAssertion);
+        super.verifyExistence(String.format("Attribute %s in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", name.expected, getParentClassWrapper().name.expected),throwAssertion);
     }
 
     public V getValue()
@@ -41,67 +58,63 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
     @SuppressWarnings("unchecked")
     public V getValue(Object obj) { // usually obj is type T, but could be a subclass
         verifyExistence(true);
-        try { field.setAccessible(true); } catch (Exception e) { /*Ignore*/ }
 
-        Object object = (obj != null) ? obj : (Modifier.isStatic(field.getModifiers()) ? null : getParentClassWrapper().getObj());
+        if(obj == null) {
+            boolean useByteBuddy = !Modifier.isPrivate(field.getModifiers());
+            boolean stat = Modifier.isStatic(field.getModifiers());
+            obj = stat ? null : getParentClassWrapper().getObj(useByteBuddy);
 
-        @SuppressWarnings("deprecation")
-        Optional<?> val = ReflectionUtils.readFieldValue(field,object);
-
-
-        return val.map(o -> (V) saveCast(o, type.expected)).orElse(null);
-
-         /*
-            Object v = val.get();
-            if(v instanceof Double) {
-                Double d = (Double) val.get();
-                if(expectedType == Float.class || expectedType == float.class) {
-                    return (V) Float.valueOf(d.floatValue());
-                }
-                else if(expectedType == Long.class || expectedType == long.class) {
-                    return (V) Long.valueOf(d.longValue());
-                }
-                else if(expectedType == Integer.class || expectedType == int.class) {
-                    return (V) Integer.valueOf(d.intValue());
-                }
-                else if(expectedType == Double.class || expectedType == double.class) {
-                    return (V) d;
-                }
-            }
-            if(v instanceof Float) {
-                Float f = (Float)val.get();
-                if(expectedType == Double.class || expectedType == double.class) {
-                    return (V) Double.valueOf(f.doubleValue());
-                }
-                else if(expectedType == Long.class || expectedType == long.class) {
-                    return (V) Long.valueOf(f.longValue());
-                }
-                else if(expectedType == Integer.class || expectedType == int.class) {
-                    return (V) Integer.valueOf(f.intValue());
-                }
-                else if(expectedType == Float.class || expectedType == float.class) {
-                    return (V) f;
-                }
-            }
-            return (V)val.get();
         }
-        else {
-            return null;
+        Object val = null;
+        try {
+            field.setAccessible(true);
+            val = field.get(obj);
+        } catch (Throwable e) {
+            // If access is blocked by the Artemis SecurityManager (suppressAccessChecks),
+            // fall back to calling a public getter method (e.g. getYear) if available.
+            boolean isSecEx = e instanceof SecurityException || (e.getCause() != null && e.getCause() instanceof SecurityException);
+            if (isSecEx) {
+                // Attempt to call a conventional getter: get<FieldName>()
+                try {
+                    String fname = name.expected;
+                    String getter = "get" + Character.toUpperCase(fname.charAt(0)) + fname.substring(1);
+                    val = ReflectionTestUtils.invokeMethod(obj, getter);
+                } catch (Throwable ex2) {
+                    // Print both exceptions for debugging and fail
+                    try { System.err.println("[AttributeWrapper] primary access blocked, getter fallback failed for '" + name.expected + "'"); e.printStackTrace(System.err); ex2.printStackTrace(System.err); } catch (Throwable ignore) {}
+                    String causeMsg = ex2 == null ? (e == null ? "<no-exception>" : e.toString()) : ex2.toString();
+                    Assertions.fail(String.format("Could not access value of attribute '%s' in %s. Cause: %s",
+                            name.expected, getParentClassWrapper().name.expected, causeMsg));
+                }
+            } else {
+                // Not a security exception -> fail with original exception
+                try { System.err.println("[AttributeWrapper] valueForNonPublicAttribute failed for '" + name.expected + "'"); e.printStackTrace(System.err); } catch (Throwable ignore) {}
+                String causeMsg = e == null ? "<no-exception>" : e.toString();
+                Assertions.fail(String.format("Could not access value of attribute '%s' in %s. Cause: %s",
+                        name.expected, getParentClassWrapper().name.expected, causeMsg));
+            }
         }
-        */
+        return (V)saveCast(val, type.expected);
     }
 
     public void setValue(V value)
     {
         setValue(value, null);
     }
+
     public void setValue(Object value, Object obj)
     {
         verifyExistence(true);
-        final Object object = obj == null ? Modifier.isStatic(field.getModifiers()) ? null : getParentClassWrapper().getObj() : obj;
-        Assertions.assertThatCode(() ->
-                  ReflectionTestUtils.setValueOfNonPublicAttribute(object,field.getName(),value)
-         ).doesNotThrowAnyException();
+        boolean useByteBuddy = Arrays.asList(modifiers.actual.split(" ")).contains("private");
+        final Object object = obj == null ? Modifier.isStatic(field.getModifiers()) ? null : getParentClassWrapper().getObj(useByteBuddy) : obj;
+        try {
+              ReflectionTestUtils.setValueOfNonPublicAttribute(object,field.getName(),value);
+        }
+        catch (AssertionError e) {  fail(e.getMessage()); }
+        catch (Exception e) {
+            Assertions.fail(String.format("Could not set value of attribute '%s' in %s.",
+                    name.expected, getParentClassWrapper().name.expected), e);
+        }
     }
 
 
