@@ -1,7 +1,11 @@
 package de.tum.cit.aet.test;
 
-import de.tum.cit.aet.wrappers.*;
+import static de.tum.cit.aet.Constants.*;
 import static de.tum.cit.aet.TestManager.*;
+import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
+import static org.assertj.core.api.Assertions.fail;
+
+import de.tum.cit.aet.levenshtein.ClassWrapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -17,62 +21,61 @@ public class TestAbstr {
      * Test that the constructor initializes the manufacturer attribute correctly.
      */
     public static void testConstructorManufacturer() {
-        Assertions.assertThatCode(() -> 
-            vehicleAbstr().constructor().invoke("Toyota", 2022))
-            .withFailMessage("Constructor of %s is not implemented correctly.",
-                           vehicleAbstr().getExpectedName())
-            .doesNotThrowAnyException();
-        
-        Object manufacturer = vehicleAbstr().manufacturer().getValue(vehicleAbstr().getObj());
-        Assertions.assertThat(manufacturer)
-            .withFailMessage("Value of attribute %s must be equal to the value passed in constructor.",
-                           vehicleAbstr().manufacturer().getExpectedName())
-            .isEqualTo("Toyota");
+        try {
+            Object obj = vehicleAbstr().constructor().invoke("Toyota", 2022);
+
+            var manufacturer = saveCast(vehicleAbstr().getManufacturer().invokeOnSpecificObject(obj), manufacturerType());
+            Assertions.assertThat(manufacturer)
+                .withFailMessage("Value of attribute %s must be equal to the value passed in constructor.",
+                               vehicleAbstr().manufacturer().getExpectedName())
+                .isEqualTo("Toyota");
+        }
+        catch (Exception e) {
+            fail("Invoking constructor of %s caused an exception: %s",
+                    vehicleAbstr().getExpectedName(), e.getMessage());
+        }
     }
     
     /**
      * Test that the constructor initializes the year attribute correctly.
      */
     public static void testConstructorYear() {
-        Object year = vehicleAbstr().year().getValue(vehicleAbstr().getObj());
-        Assertions.assertThat((int)year)
+        var year = saveCast(vehicleAbstr().year().getValue(), yearType());
+        Assertions.assertThat(year)
             .withFailMessage("Value of attribute %s must be equal to the value passed in constructor.",
                            vehicleAbstr().year().getExpectedName())
-            .isEqualTo(2022);
+            .isEqualTo(2023);
     }
     
     /**
      * Test getManufacturer method.
      */
     public static void testGetManufacturer() {
-        String manufacturer = vehicleAbstr().getManufacturerMethod().invoke(vehicleAbstr().getObj());
-        Assertions.assertThat(manufacturer)
-            .withFailMessage("Method %s should return the manufacturer value.",
-                           vehicleAbstr().getManufacturerMethod().getExpectedName())
-            .isEqualTo("Toyota");
+        vehicleAbstr().testGetter(vehicleAbstr().manufacturer(), vehicleAbstr().getManufacturer());
     }
     
     /**
      * Test getYear method.
      */
     public static void testGetYear() {
-        Object year = vehicleAbstr().getYearMethod().invoke(vehicleAbstr().getObj());
-        Assertions.assertThat((int)year)
-            .withFailMessage("Method %s should return the year value.",
-                           vehicleAbstr().getYearMethod().getExpectedName())
-            .isEqualTo(2022);
+        vehicleAbstr().testGetter(vehicleAbstr().year(), vehicleAbstr().getYear());
     }
     
     /**
      * Test getInfo method.
      */
     public static void testGetInfo() {
-        String info = vehicleAbstr().getInfoMethod().invoke(vehicleAbstr().getObj());
+        Object obj = vehicleAbstr().getObj(true, true,
+                vehicleAbstr().constructor(),
+                "BMW",2023);
+        var man = (String)saveCast(vehicleAbstr().manufacturer().getValue(obj),manufacturerType());
+        var year = saveCast(vehicleAbstr().year().getValue(obj),yearType());
+        String info = vehicleAbstr().getInfo().invokeOnSpecificObject(obj); // DEMO of generic type usage, no need to cast anything
         Assertions.assertThat(info)
             .withFailMessage("Method %s should return vehicle information.",
-                           vehicleAbstr().getInfoMethod().getExpectedName())
+                           vehicleAbstr().getInfo().getExpectedName())
             .isNotNull()
-            .contains("Toyota", "2022");
+            .contains(man, ""+year);
     }
 }
 

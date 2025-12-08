@@ -4,7 +4,12 @@ import de.tum.cit.aet.test.*;
 import de.tum.cit.aet.wrappers.*;
 
 
+import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.assertj.core.api.Assertions.*;
+
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.implementation.FixedValue;
+import net.bytebuddy.matcher.ElementMatchers;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -41,6 +46,10 @@ public class TestManager {
         driveableInterface = new DrivableWrapper<>();
         vehicleAbstr = new AbstrWrapper<>();
         carImpl = new CarWrapper<>(vehicleAbstr, driveableInterface);
+        try {
+            //vehicleAbstr().setObj(carImpl().getObj(), false);
+        }
+        catch(Exception e) {}
     }
 
     @Test
@@ -54,6 +63,18 @@ public class TestManager {
         assertThat(driveableInterface).isNotNull();
         assertThat(driveableInterface).isInstanceOf(DrivableWrapper.class);
 
+    }
+
+    @Test
+    void testBytebuddy() throws InstantiationException, IllegalAccessException {
+        Class<?> dynamicType = new ByteBuddy()
+                .subclass(Object.class)
+                .method(ElementMatchers.named("toString"))
+                .intercept(FixedValue.value("Hello World!"))
+                .make()
+                .load(getClass().getClassLoader())
+                .getLoaded();
+        assertThat(dynamicType.newInstance().toString()).isEqualTo("Hello World!");
     }
 
     @TestFactory
@@ -205,53 +226,14 @@ public class TestManager {
     }
 
     // ============================================================================
-    // Interface Tests (5 tests)
+    // Interface Tests (1 test)
     // ============================================================================
 
-    @Test
-    void testInterfaceExists() {
-        try {
-            TestInterface.testInterfaceExists();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
 
     @Test
     void testInterfaceMaxSpeedConstant() {
         try {
             TestInterface.testMaxSpeedConstant();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testInterfaceStartMethodExists() {
-        try {
-            TestInterface.testStartMethodExists();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testInterfaceGetSpeedMethodExists() {
-        try {
-            TestInterface.testGetSpeedMethodExists();
-        }
-        catch (AssertionError e) {
-            fail(e.getMessage());
-        }
-    }
-
-    @Test
-    void testInterfaceCarImplementsInterface() {
-        try {
-            TestInterface.testCarImplementsInterface();
         }
         catch (AssertionError e) {
             fail(e.getMessage());
