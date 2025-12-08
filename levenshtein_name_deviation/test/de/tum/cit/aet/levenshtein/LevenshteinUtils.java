@@ -61,4 +61,37 @@ public class LevenshteinUtils
 
         return deviation <= threshold;
     }
+
+    public static Object saveCast(Object val, Class<?> castTo) {
+        return saveCast(val, castTo, false);
+    }
+
+    public static Object saveCast(Object val, Class<?> castTo, boolean allowNull) {
+        if(!allowNull && val == null) {
+            throw new IllegalArgumentException("A value was null that is not allowed to be null");
+        }
+        if(val == null) {
+            return null;
+        }
+        if(castTo.isInstance(val)) {
+            return val;
+        }
+        if(val instanceof Number) {
+            Number n = (Number) val;
+            if(castTo == Integer.class || castTo == int.class) {
+                return n.intValue();
+            }
+            else if(castTo == Long.class || castTo == long.class) {
+                return n.longValue();
+            }
+            else if(castTo == Float.class || castTo == float.class) {
+                return n.floatValue();
+            }
+            else if(castTo == Double.class || castTo == double.class) {
+                return n.doubleValue();
+            }
+        }
+        //Logging.logWarning(String.format("Cannot cast value %s of type %s to type %s", val, val.getClass().getName(), castTo.getName()));
+        return val;
+    }
 }
