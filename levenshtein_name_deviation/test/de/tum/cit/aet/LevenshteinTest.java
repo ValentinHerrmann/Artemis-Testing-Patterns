@@ -41,9 +41,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @BlacklistPath("target/test-classes") // prevent access to test-related classes and resources
 @BlacklistPackage("org.pdfsam.*")
 @BlacklistPackage("io.reactivex.*")
-@Hidden
-@Deadline(TestSettings.SHOW_HIDDEN_AFTER)
-@ActivateHiddenBefore(TestSettings.SHOW_HIDDEN_BEFORE)
 @MirrorOutput
 @StrictTimeout(TIMEOUT_SECONDS)
 @Retention(RUNTIME)

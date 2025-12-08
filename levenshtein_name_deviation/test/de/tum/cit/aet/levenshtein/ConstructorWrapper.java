@@ -6,11 +6,9 @@ import org.assertj.core.api.Assertions;
 import de.tum.in.test.api.util.ReflectionTestUtils;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence; 
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 
 public class ConstructorWrapper<T> extends Wrapper<T>
@@ -23,6 +21,7 @@ public class ConstructorWrapper<T> extends Wrapper<T>
         this.paramTypes = paramTypes;
     }
 
+    @SuppressWarnings("unused")
     public ConstructorWrapper(ClassWrapper<T> parentClass, String modifiers) {
         this(parentClass, new Class<?>[] {}, modifiers);
     }
@@ -40,7 +39,13 @@ public class ConstructorWrapper<T> extends Wrapper<T>
         else
         {
         */
-            super.verifyExistence(String.format("Constructor '%s' in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
+
+            super.verifyExistence(String.format("""
+                Constructor %s in class %s is not implemented as expected.
+                --> See structural Tests for details about this.
+                --> This may lead subsequent tests to fail.
+                """,
+                this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
         //}
     }
 
@@ -88,7 +93,7 @@ public class ConstructorWrapper<T> extends Wrapper<T>
 
         try {
             if(getParentClassWrapper().modifiers.actual.contains("abstract")) {
-                return (T)getParentClassWrapper().getObj(true,true,this,args);
+                return getParentClassWrapper().getObj(true,true,this,args);
             }
             else {
                 return (T) ReflectionTestUtils.newInstance(constructor, args);

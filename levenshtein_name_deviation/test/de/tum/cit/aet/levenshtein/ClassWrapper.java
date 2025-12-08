@@ -14,7 +14,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
 
 import static de.tum.cit.aet.Constants.abstractClass;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.saveCast;
+import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 import static de.tum.cit.aet.levenshtein.LevenshteinUtils.levenshteinDistance;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,7 +43,11 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("Class %s in package %s is not implemented as expected.", name.expected, expectedPackage),throwAssertion);
+        super.verifyExistence(String.format("""
+                Class %s in package %s is not implemented as expected.
+                --> See structural Tests for details about this.
+                --> This may lead subsequent tests to fail.
+                """, name.expected, expectedPackage),throwAssertion);
     }
 
     public Class<T> getClazz()
@@ -52,7 +56,6 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         return clazz;
     }
 
-    @SuppressWarnings("unchecked")
     public Object getDynamicSubclassObj(Class<?>[] constructorParamTypes, Object... constructorArgs) {
         Object dynObj = null;
         try {
@@ -65,9 +68,8 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
 
             // Instantiate the dynamic subclass with constructor arguments
             java.lang.reflect.Constructor<?> ctor = dynamicType.getConstructor(constructorParamTypes);
-        dynObj = (T)ctor.newInstance(constructorArgs);
+        dynObj = ctor.newInstance(constructorArgs);
         }
-        catch (AssertionError e) {  fail(e.getMessage()); }
         catch (Throwable e) {
             String errorMsg = e.getMessage() != null ? e.getMessage() : e.getClass().getName();
             if (e.getCause() != null && e.getCause().getMessage() != null) {
@@ -112,11 +114,12 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
                     fail(String.format("Cannot instantiate interface %s directly.\n" +
                             "This may lead subsequent tests to fail.", name.actual));
                 }
-                Assertions.assertThatCode(() -> {
-                    obj = (T)constructorWrapper.invoke(constructorArgs);
-                }).withFailMessage("Creating instances of class %s failed. Constructor may not be implemented correctly.\n" +
-                                "This may lead subsequent tests to fail.",
-                            name.expected).doesNotThrowAnyException();
+                Assertions.assertThatCode(() ->
+                            obj = (T)constructorWrapper.invoke(constructorArgs)
+                        )
+                        .withFailMessage("Creating instances of class %s failed. Constructor may not be implemented correctly.\n" +
+                                "This may lead subsequent tests to fail.",name.expected)
+                        .doesNotThrowAnyException();
                 return obj;
             }
         }
@@ -205,8 +208,11 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
                 }
             }
         }
-        if (
-                interfaceWrappers.actual.length > interfaceWrappers.expected.length) {
+        boolean expNull = interfaceWrappers.expected == null;
+        int expLen = expNull ? 0 : interfaceWrappers.expected.length;
+        int actLen = interfaceWrappers.actual.length;
+
+        if (actLen > expLen) {
             interfaceWrappers.existence = DEVIATES;
         }
         else {
@@ -402,14 +408,19 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
     {
         parseExistence();
         String intro = switch (existence) {
-            case EXACT -> "✅ ";
+            case EXACT -> expectedToString();
             case DEVIATES -> "!! DEVIATION !! \nIf possible actual will be used for further testing";
             case MISSING -> "X MISSING X";
-            default -> "Existence unchecked.";
+            default -> "Existence unchecked";
         } + " in package %s".formatted(expectedPackage);
-        return String.format("%s\nExpect:\t%s\nActual:\t%s", intro, expectedToString(), actualToString());
+        return String.format("""
+                %s
+                Expect:\t%s
+                Actual:\t%s
+                """, intro, expectedToString(), actualToString());
     }
 
+    @SuppressWarnings("unused")
     public void testGetter(AttributeWrapper<?,?> attribute, MethodWrapper<?,?> getter)  {
         attribute.verifyExistence(true);
         getter.verifyExistence(true);
@@ -422,11 +433,14 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         Object expected = attribute.getValue(obj);
         Object actual = getter.invokeOnSpecificObject(obj);
 
-        assertThat(expected).isEqualTo(actual).withFailMessage(
-            "Getter '%s' does not return the attribute's value.\nExpected: %s\nActual: %s",
+        assertThat(expected).withFailMessage(
+                """
+                        Getter '%s' does not return the attribute's value.
+                        Expected: %s
+                        Actual: %s""",
             getter.actualToString(),
             expected.toString(),
             actual != null ? actual.toString() : "null"
-        );
+        ).isEqualTo(actual);
     }
 }

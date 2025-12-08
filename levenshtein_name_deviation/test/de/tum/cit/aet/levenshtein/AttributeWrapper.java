@@ -2,15 +2,11 @@ package de.tum.cit.aet.levenshtein;
 
 import de.tum.cit.aet.TestSettings;
 import de.tum.in.test.api.util.ReflectionTestUtils;
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
-import org.junit.platform.commons.util.ReflectionUtils;
 
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Optional;
 
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
@@ -28,6 +24,7 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
     * Just here to determine generic type V. Not used for anything else.
      * Use {@link AttributeWrapper#type} to get the expected type.
     */
+    @SuppressWarnings("unused")
     private final Class<V> expectedType;
 
     /**
@@ -48,9 +45,14 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("Attribute %s in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", name.expected, getParentClassWrapper().name.expected),throwAssertion);
+        super.verifyExistence(String.format("""
+                Attribute %s in class %s is not implemented as expected.
+                --> See structural Tests for details about this.
+                --> This may lead subsequent tests to fail.""",
+                name.expected, getParentClassWrapper().name.expected),throwAssertion);
     }
 
+    @SuppressWarnings("unused")
     public V getValue()
     {
         return getValue(null);
@@ -105,10 +107,18 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
     public void setValue(Object value, Object obj)
     {
         verifyExistence(true);
-        boolean useByteBuddy = Arrays.asList(modifiers.actual.split(" ")).contains("private");
+
+        boolean useByteBuddy = !Modifier.isPrivate(field.getModifiers());
+        boolean isFinal = Modifier.isFinal(field.getModifiers());
+        if(isFinal) {
+            fail(String.format("Cannot set value of attribute %s in %s because it is declared final (but should be).",
+                    name.expected, getParentClassWrapper().name.expected));
+        }
+
         final Object object = obj == null ? Modifier.isStatic(field.getModifiers()) ? null : getParentClassWrapper().getObj(useByteBuddy) : obj;
         try {
-              ReflectionTestUtils.setValueOfNonPublicAttribute(object,field.getName(),value);
+            try { field.setAccessible(true); } catch (Exception e) { /*Ignore*/ }
+            field.set(object, value);
         }
         catch (AssertionError e) {  fail(e.getMessage()); }
         catch (Exception e) {

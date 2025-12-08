@@ -7,13 +7,11 @@ import de.tum.in.test.api.util.ReflectionTestUtils;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
 import static org.assertj.core.api.Assertions.fail;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 public class MethodWrapper<T, R> extends Wrapper<T>
 {
@@ -28,6 +26,7 @@ public class MethodWrapper<T, R> extends Wrapper<T>
         this.returnType = new WrapperProperty<>(expectedReturnType);
     }
 
+    @SuppressWarnings("unused")
     public MethodWrapper(ClassWrapper<T> parentClass, String expectedName, Class<R> expectedReturnType, String... modifiers) {
         this(parentClass, expectedName, expectedReturnType, new Class<?>[0], modifiers);
     }
@@ -35,7 +34,10 @@ public class MethodWrapper<T, R> extends Wrapper<T>
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("Method %s in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
+        super.verifyExistence(String.format("""
+                Method %s in class %s is not implemented as expected.
+                --> See structural Tests for details about this.
+                --> This may lead subsequent tests to fail.""", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class MethodWrapper<T, R> extends Wrapper<T>
 
     /**
      *
-     * @param objWrapper The object to invoke the method on. If null, uses getObj() of the parent class (or null for static methods).
+     * @param obj The object to invoke the method on. If null, uses getObj() of the parent class (or null for static methods).
      * {@param params} Values for the methods parameters.
      * @return The return value of the method, save-cast to R.
      */
@@ -135,7 +137,7 @@ public class MethodWrapper<T, R> extends Wrapper<T>
             return (R)saveCast(val, returnType.expected);
         }
         catch(Exception e) {
-            fail("Calling method '%s' on class '%s' threw an exception.",actualToString(), getParentClassWrapper().name.expected);
+            fail("Calling method %s on class %s threw an exception.",actualToString(), getParentClassWrapper().name.expected);
         }
         return null;
     }
@@ -148,7 +150,7 @@ public class MethodWrapper<T, R> extends Wrapper<T>
                 modifiers.expected,
                 returnType.expected == null ? "<missing>" : returnType.expected.getSimpleName(),
                 name.expected,
-                String.join(", ",Arrays.stream(paramTypes).map(Class::toString).collect(Collectors.joining(", ")))
+                String.join(", ",Arrays.stream(paramTypes).map(Class::getSimpleName).collect(Collectors.joining(", ")))
         );
     }
 
@@ -162,7 +164,7 @@ public class MethodWrapper<T, R> extends Wrapper<T>
                 modifiers.actual,
                 returnType.actual == null ? "<missing>" : returnType.actual.getSimpleName(),
                 name.actual,
-                String.join(", ",Arrays.stream(paramTypes).map(Class::toString).collect(Collectors.joining(", ")))
+                String.join(", ",Arrays.stream(paramTypes).map(Class::getSimpleName).collect(Collectors.joining(", ")))
         );
     }
 }

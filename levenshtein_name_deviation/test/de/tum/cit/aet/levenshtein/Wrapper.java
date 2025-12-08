@@ -24,10 +24,7 @@ public abstract class Wrapper<T>
     }
 
 
-    public void verifyExistence(boolean throwAssertion)
-    {
-        verifyExistence(String.format("Element %s in class %s is not implemented as expected.\nThis may lead subsequent tests to fail.", name.expected, getParentClassWrapper().name.expected),throwAssertion);
-    }
+    public abstract void verifyExistence(boolean throwAssertion);
 
     protected void verifyExistence(String failMessage, boolean throwAssertion)
     {
@@ -157,12 +154,11 @@ public abstract class Wrapper<T>
             );
             case UNCHECKED -> String.format(
                     """
-                    ❓ UNCHECKED in %s ❓
+                    ? UNCHECKED in %s ?
                     Expect:\t%s
                     """,
                     getParentClassWrapper().name.expected, expectedToString()
             );
-            default -> throw new RuntimeException("Unknown existence: " + existence);
         };
     }
     public abstract String expectedToString();

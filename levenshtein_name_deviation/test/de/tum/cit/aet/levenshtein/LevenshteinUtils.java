@@ -57,7 +57,7 @@ public class LevenshteinUtils
 
         int distance = levenshteinDistance(expectedName, actualName);
         int maxLength = Math.max(expectedName.length(), actualName.length());
-        double deviation = (distance*100) / maxLength;
+        double deviation = (double) (distance * 100) / maxLength;
 
         return deviation <= threshold;
     }
@@ -76,8 +76,7 @@ public class LevenshteinUtils
         if(castTo.isInstance(val)) {
             return val;
         }
-        if(val instanceof Number) {
-            Number n = (Number) val;
+        if(val instanceof Number n) {
             if(castTo == Integer.class || castTo == int.class) {
                 return n.intValue();
             }
