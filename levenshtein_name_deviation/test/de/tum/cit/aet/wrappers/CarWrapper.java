@@ -1,8 +1,10 @@
 package de.tum.cit.aet.wrappers;
 
 import de.tum.cit.aet.levenshtein.*;
+
 import static de.tum.cit.aet.Constants.*;
 import static de.tum.cit.aet.TestSettings.BASE_PACKAGE;
+import static org.assertj.core.api.Assertions.fail;
 
 import org.assertj.core.api.Assertions;
 
@@ -21,16 +23,16 @@ public class CarWrapper<T> extends ClassWrapper<T> {
     private final ConstructorWrapper<T> constructor_default;
 
     // Car-specific methods
-    private final MethodWrapper<T, ?> getPriceMethod;
+    private final MethodWrapper<T, ?> getPrice;
 
     // Interface methods (from Driveable)
-    private final MethodWrapper<T, Void> startMethod;
-    private final MethodWrapper<T, ?> getSpeedMethod;
+    private final MethodWrapper<T, ?> start;
+    private final MethodWrapper<T, ?> getSpeed;
 
     // Overridden methods
-    private final MethodWrapper<T, ?> calculateCostMethod;
-    private final MethodWrapper<T, ?> calculateCostYearsMethod; // Method overloading
-    private final MethodWrapper<T, String> getInfoMethod;
+    private final MethodWrapper<T, ?> calculateCost;
+    private final MethodWrapper<T, ?> calculateCostYears; // Method overloading
+    private final MethodWrapper<T, String> getInfo; // DEMO of generic type usage
 
     // Getters for attributes
     public AttributeWrapper<T, ?> price() {
@@ -51,30 +53,30 @@ public class CarWrapper<T> extends ClassWrapper<T> {
     }
 
     // Getters for Car-specific methods
-    public MethodWrapper<T, ?> getPriceMethod() {
-        return getPriceMethod;
+    public MethodWrapper<T, ?> getPrice() {
+        return getPrice;
     }
 
     // Getters for interface methods
-    public MethodWrapper<T, Void> startMethod() {
-        return startMethod;
+    public MethodWrapper<T, ?> startMethod() {
+        return start;
     }
 
-    public MethodWrapper<T, ?> getSpeedMethod() {
-        return getSpeedMethod;
+    public MethodWrapper<T, ?> getSpeed() {
+        return getSpeed;
     }
 
     // Getters for overridden methods
-    public MethodWrapper<T, ?> calculateCostMethod() {
-        return calculateCostMethod;
+    public MethodWrapper<T, ?> calculateCost() {
+        return calculateCost;
     }
 
-    public MethodWrapper<T, ?> calculateCostYearsMethod() {
-        return calculateCostYearsMethod;
+    public MethodWrapper<T, ?> calculateCostYears() {
+        return calculateCostYears;
     }
 
-    public MethodWrapper<T, String> getInfoMethod() {
-        return getInfoMethod;
+    public MethodWrapper<T, String> getInfo() { // DEMO of generic type usage
+        return getInfo;
     }
 
     // Getters for overridden abstract methods
@@ -87,82 +89,89 @@ public class CarWrapper<T> extends ClassWrapper<T> {
               "public");
 
         // Initialize attributes
-        price = new AttributeWrapper<>(this,
-                                        "price",
-                                        double.class,
-                                        "private");
+        price = new AttributeWrapper<>(
+                this,
+                concreteClassAttribute(),  // "price"
+                priceType(),                            // double.class,
+                "private");
 
-        speed = new AttributeWrapper<>(this,
-                                        "speed",
-                                        speedType(),
-                                        "private");
+        speed = new AttributeWrapper<>(
+                this,
+                speedAttribute(),   // "speed"
+                speedType(),        // double.class
+                "private");
 
         // Initialize constructors (constructor overloading)
-        constructor_full = new ConstructorWrapper<>(this,
-                                                     new Class<?>[]{
-                                                         String.class,
-                                                         yearType(),
-                                                         double.class
-                                                     },
-                                                     "public");
+        constructor_full = new ConstructorWrapper<>(
+                this,
+                new Class<?>[]{
+                        manufacturerType(),// String.class
+                        yearType(),        // int.class
+                        priceType()        // double.class
+                },
+                "public"
+        );
 
-        constructor_default = new ConstructorWrapper<>(this,
-                                                        new Class<?>[]{
-                                                            String.class,
-                                                            yearType()
-                                                        },
-                                                        "public");
+        constructor_default = new ConstructorWrapper<>(
+                this,
+                new Class<?>[]{
+                    manufacturerType(), // String.class
+                    yearType()          // int.class
+                },
+                "public"
+        );
 
         // Initialize Car-specific methods
-        getPriceMethod = new MethodWrapper<>(this,
-                                              "getPrice",
-                                              double.class,
-                                              new Class<?>[]{},
-                                              "public");
+        getPrice = new MethodWrapper<>(
+                this,
+                getPriceMethodName(),   // "getPrice"
+                priceType(),                        // double.class,
+                "public"
+        );
 
-        // Initialize interface methods
-        startMethod = new MethodWrapper<>(this,
-                                           "start",
-                                           void.class,
-                                           new Class<?>[]{},
-                                           "public");
+        start = new MethodWrapper<>(
+                this,
+                interfaceMethod(), // "start"
+                startRetType(),                 // void.class,
+                "public"
+        );
 
-        getSpeedMethod = new MethodWrapper<>(this,
-                                              "getSpeed",
-                                              speedType(),
-                                              new Class<?>[]{},
-                                              "public");
+        getSpeed = new MethodWrapper<>(
+                this,
+                getSpeedMethodName(),   // "getSpeed"
+                speedType(),                        // double.class
+                "public"
+        );
 
         // Initialize overridden methods
-        calculateCostMethod = new MethodWrapper<>(this,
-                                                   overwrittenMethod(),
-                                                   calcReturnType(),
-                                                   new Class<?>[]{},
-                                                   "public");
+        calculateCost = new MethodWrapper<>(
+                this,
+                overwrittenMethod(),    // "calculateCost"
+                calcReturnType(),                   // double.class
+                "public"
+        );
 
         // Method overloading - same name, different parameters
-        calculateCostYearsMethod = new MethodWrapper<>(this,
-                                                        overwrittenMethod(),
-                                                        calcReturnType(),
-                                                        new Class<?>[]{int.class},
-                                                        "public");
+        calculateCostYears = new MethodWrapper<>(
+                this,
+                overwrittenMethod(),    // "calculateCost"
+                calcReturnType(),                   // double.class
+                new Class<?>[]{yearType()},         // int.class
+                "public"
+        );
 
-        getInfoMethod = new MethodWrapper<>(this,
-                                             "getInfo",
-                                             String.class,
-                                             new Class<?>[]{},
-                                             "public");
+        // DEMO of usage without Variant Pattern
+        getInfo = new MethodWrapper<>(
+                this,
+                "getInfo",
+                String.class,
+                "public"
+        );
     }
 
     @Override
-    public Object getObj() {
-        if (obj == null) {
-            Assertions.assertThatCode(() -> {
-                obj = constructor_full.invoke("BMW", 2023, 30000.0);
-            }).withFailMessage("Creating instances of class %s failed. Constructor may not be implemented correctly.",
-                              concreteClass()).doesNotThrowAnyException();
-        }
-        return obj;
+    public Object getObj(boolean forceNew, boolean useByteBuddy) {
+        return getObj(forceNew, useByteBuddy, constructor_full, "BMW", 2023, 30000.0);
     }
 }
 

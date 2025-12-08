@@ -2,7 +2,12 @@ package de.tum.cit.aet.wrappers;
 
 import de.tum.cit.aet.TestSettings;
 import de.tum.cit.aet.levenshtein.*;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+
 import static de.tum.cit.aet.Constants.*;
+import static de.tum.cit.aet.levenshtein.LevenshteinUtils.saveCast;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * Wrapper for the AbstractVehicle abstract class.
@@ -10,18 +15,18 @@ import static de.tum.cit.aet.Constants.*;
  */
 public class AbstrWrapper<T> extends ClassWrapper<T> {
     
-    private final AttributeWrapper<T, String> manufacturer;
+    private final AttributeWrapper<T, ?> manufacturer;
     private final AttributeWrapper<T, ?> year;
 
     private final ConstructorWrapper<T> constructor;
     
-    private final MethodWrapper<T, String> getManufacturerMethod;
-    private final MethodWrapper<T, ?> getYearMethod;
-    private final MethodWrapper<T, ?> calculateCostMethod;
-    private final MethodWrapper<T, String> getInfoMethod;
+    private final MethodWrapper<T, ?> getManufacturer;
+    private final MethodWrapper<T, ?> getYear;
+    private final MethodWrapper<T, ?> calculateCost;
+    private final MethodWrapper<T, String> getInfo; // DEMO of generic type usage
 
     // Getters for attributes
-    public AttributeWrapper<T, String> manufacturer() {
+    public AttributeWrapper<T, ?> manufacturer() {
         return manufacturer;
     }
 
@@ -35,77 +40,93 @@ public class AbstrWrapper<T> extends ClassWrapper<T> {
     }
 
     // Getters for methods
-    public MethodWrapper<T, String> getManufacturerMethod() {
-        return getManufacturerMethod;
+    public MethodWrapper<T, ?> getManufacturer() {
+        return getManufacturer;
     }
 
-    public MethodWrapper<T, ?> getYearMethod() {
-        return getYearMethod;
+    public MethodWrapper<T, ?> getYear() {
+        return getYear;
     }
 
-    public MethodWrapper<T, ?> calculateCostMethod() {
-        return calculateCostMethod;
+    public MethodWrapper<T, ?> calculateCost() {
+        return calculateCost;
     }
 
-    public MethodWrapper<T, String> getInfoMethod() {
-        return getInfoMethod;
+    public MethodWrapper<T, String> getInfo() {
+        return getInfo;
     }
 
     public AbstrWrapper() {
-        super(abstractClass(),
+        super(abstractClass(),  // "AbstractVehicle"
               TestSettings.BASE_PACKAGE,
-              null,
-              null,
-              "public", "abstract");
+              "public", "abstract"
+        );
 
         // Initialize attributes
-        manufacturer = new AttributeWrapper<>(this,
-                                               abstractClassAttribute(),
-                                               String.class,
-                                               "protected");
+        manufacturer = new AttributeWrapper<>(
+                this,
+                abstractClassAttribute(),// "manufacturer"
+                manufacturerType(),      // String.class
+                "protected"
+        );
 
-        year = new AttributeWrapper<>(this,
-                                       "year",
-                                       yearType(),
-                                       "protected");
+        year = new AttributeWrapper<>(
+                this,
+                yearAttribute(),// "year"
+                yearType(),     // int.class
+                "protected"
+        );
 
         // Initialize constructor
-        constructor = new ConstructorWrapper<>(this,
-                                                new Class<?>[]{String.class, yearType()},
-                                                "public");
+        constructor = new ConstructorWrapper<>(
+                this,
+                new Class<?>[]{
+                    manufacturerType(), // String.class
+                    yearType()          // int.class
+                },
+                "public"
+        );
 
-        // Initialize methods
-        getManufacturerMethod = new MethodWrapper<>(this,
-                                                     "getManufacturer",
-                                                     String.class,
-                                                     new Class<?>[]{},
-                                                     "public");
+        getManufacturer = new MethodWrapper<>(
+                this,
+                getManufacturerMethodName(),    // "getManufacturer"
+                manufacturerType(),                         // String.class
+                "public"
+        );
 
-        getYearMethod = new MethodWrapper<>(this,
-                                             "getYear",
-                                             yearType(),
-                                             new Class<?>[]{},
-                                             "public");
+        getYear = new MethodWrapper<>(
+                this,
+                getYearMethodName(),   // "getYear"
+                yearType(),            // int.class
+                "public"
+        );
 
-        calculateCostMethod = new MethodWrapper<>(this,
-                                                   overwrittenMethod(),
-                                                   calcReturnType(),
-                                                   new Class<?>[]{},
-                                                   "public", "abstract");
+        calculateCost = new MethodWrapper<>(
+                this,
+                overwrittenMethod(), // "calculateCost"
+                calcReturnType(),    // double.class
+                "public", "abstract"
+        );
 
-        getInfoMethod = new MethodWrapper<>(this,
-                                             "getInfo",
-                                             String.class,
-                                             new Class<?>[]{},
-                                             "public");
+        // DEMO of usage without Variant Pattern
+        getInfo = new MethodWrapper<>(
+                this,
+                "getInfo",
+                String.class,
+                "public"
+        );
     }
 
     @Override
-    public Object getObj() {
-        if (obj == null) {
-            obj = constructor.invoke("BMW", 2023);
+    public T getObj(boolean forceNew, boolean useByteBuddy) {
+        return getObj(forceNew, useByteBuddy, constructor(), "BMW", 2023);
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setObj(Object obj, boolean force) {
+        if(force || this.obj == null) {
+            this.obj = (T) obj;
         }
-        return obj;
     }
 }
 

@@ -10,15 +10,15 @@ import static de.tum.cit.aet.TestSettings.BASE_PACKAGE;
  */
 public class DrivableWrapper<T> extends ClassWrapper<T> {
 
-    private final AttributeWrapper<T, Double> maxSpeed;
-    private final MethodWrapper<T, Void> startMethod;
+    private final AttributeWrapper<T, ?> maxSpeed;
+    private final MethodWrapper<T, ?> startMethod;
     private final MethodWrapper<T, ?> getSpeedMethod;
 
-    public AttributeWrapper<T, Double> maxSpeed() {
+    public AttributeWrapper<T, ?> maxSpeed() {
         return maxSpeed;
     }
 
-    public MethodWrapper<T, Void> startMethod() {
+    public MethodWrapper<T, ?> startMethod() {
         return startMethod;
     }
 
@@ -29,35 +29,44 @@ public class DrivableWrapper<T> extends ClassWrapper<T> {
     public DrivableWrapper() {
         super(interfaceName(),
               BASE_PACKAGE,
-              null,
-              null,
-              "public", "abstract", "interface");
+              "public", "abstract", "interface"
+        );
 
         // Interface constant
-        maxSpeed = new AttributeWrapper<>(this,
-                                           "MAX_SPEED",
-                                           double.class,
-                                           "public", "static", "final");
+        maxSpeed = new AttributeWrapper<>(
+                this,
+                maxSpeedConstant(), // "MAX_SPEED"
+                speedType(),        // double.class,
+                "public", "static"
+        );
 
         // Interface methods
-        startMethod = new MethodWrapper<>(this,
-                                           "start",
-                                           void.class,
-                                           new Class<?>[]{},
-                                           "public", "abstract");
+        startMethod = new MethodWrapper<>(
+                this,
+                interfaceMethod(),  // "start"
+                startRetType(),     // void.class,
+                "public", "abstract"
+        );
 
-        getSpeedMethod = new MethodWrapper<>(this,
-                                               "getSpeed",
-                                               speedType(),
-                                               new Class<?>[]{},
-                                               "public", "abstract");
+        getSpeedMethod = new MethodWrapper<>(
+                this,
+                getSpeedMethodName(), // "getSpeed"
+                speedType(), // double.class
+                "public", "abstract"
+        );
     }
 
     private Object obj;
 
+    /**
+     *
+     * @param forceNew force to create a new object even if member already holds one.
+     * @param useByteBuddy whether to use ByteBuddy to create a dynamic subclass instance (set to false for private elements!)
+     * @return
+     */
     @Override
-    public Object getObj() {
-        return obj;
+    public Object getObj(boolean forceNew, boolean useByteBuddy) {
+        return getObj(forceNew, true, null);
     }
 
     public void setObj(Object obj) {
