@@ -27,6 +27,11 @@ Tests will be run using the command `./gradlew clean test`.
 
 ### Pattern Description:
 
+
+*Attention: Lately, bytebuddy has been integrated into the pattern. 
+Parts of this docs might be deprecated and will be updated soon. Stick
+to the source code for the latest version.*
+
 Overview of the Pattern Structure (details below):
 ![your-UML-diagram-name](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/de.tum.cit.aet.puml)
 
