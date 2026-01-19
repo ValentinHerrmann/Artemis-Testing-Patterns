@@ -180,4 +180,23 @@ public class Utils
         if (type == Boolean.class) return boolean.class;
         return type;
     }
+
+    /**
+     * Converts a primitive type to its corresponding wrapper type.
+     * For example, int.class is converted to Integer.class.
+     *
+     * @param type the type to convert
+     * @return the wrapper type if type is primitive, otherwise the original type
+     */
+    public static Class<?> toWrapperType(Class<?> type) {
+        if(type == int.class) return Integer.class;
+        if(type == long.class) return Long.class;
+        if(type == double.class) return Double.class;
+        if(type == float.class) return Float.class;
+        if(type == boolean.class) return Boolean.class;
+        if(type == short.class) return Short.class;
+        if(type == byte.class) return Byte.class;
+        if(type == char.class) return Character.class;
+        return type;
+    }
 }
