@@ -1,234 +1,139 @@
-@startuml Vehicle Example - Levenshtein Pattern Architecture
+@startuml
+skinparam classAttributeIconSize 0
+hide circle
+skinparam linetype ortho
+skinparam packageStyle rectangle
 
 !include https://raw.githubusercontent.com/patrik-csak/one-dark-plantuml-theme/v1.0.1/theme.puml
 
-skinparam packageStyle rectangle
+title Levenshtein Name Deviation Pattern - Architecture Overview
 
-package "Source Code (Classes Under Test)" as src {
-    interface Driveable {
-        + startEngine(): boolean
-        + accelerate(double): void
-        + brake(double): void
-        + getCurrentSpeed(): double
-    }
+package "Test Framework\n(de.tum.cit.aet)" as AET {
 
-    abstract class AbstractVehicle {
-        # manufacturer: String
-        # model: String
-        # yearOfManufacture: int
-        # currentSpeed: double
-        # engineRunning: boolean
-        --
-        + AbstractVehicle(String, String, int)
-        + getManufacturer(): String
-        + getModel(): String
-        + getYearOfManufacture(): int
-        + isEngineRunning(): boolean
-        + getVehicleInfo(): String
-        + {abstract} calculateFuelConsumption(): double
-        + {abstract} getMaxSpeed(): double
-    }
-
-    class Car {
-        - numberOfDoors: int
-        - fuelType: String
-        - engineCapacity: double
-        - maxSpeed: double
-        - fuelConsumptionRate: double
-        --
-        + Car(String, String, int, int, String, double)
-        + getNumberOfDoors(): int
-        + getFuelType(): String
-        + getEngineCapacity(): double
-        + isElectric(): boolean
-        + startEngine(): boolean
-        + accelerate(double): void
-        + brake(double): void
-        + getCurrentSpeed(): double
-        + calculateFuelConsumption(): double
-        + getMaxSpeed(): double
-        + getVehicleInfo(): String
-    }
-
-    Car -up-|> AbstractVehicle
-    Car .up.|> Driveable
-}
-
-package "Test Infrastructure" as test_infra {
-    package "Levenshtein Framework" as framework {
-        abstract class Wrapper<T> {
-            # name: WrapperProperty<String>
-            # modifiers: WrapperProperty<String>
-            --
-            + verifyExistence(boolean): void
-            + {abstract} parseExistence(): void
+    package "levenshtein" <<Core Framework>> #LightBlue {
+        class Wrapper<T> <<abstract>> {
+            Fuzzy name matching
+            Existence verification
+            Type checking
         }
 
-        abstract class ClassWrapper<T> {
-            - expectedPackage: String
-            - clazz: Class<T>
-            --
-            + verifyExistence(boolean): void
-            + getClazz(): Class<T>
-            + getAttributeByName(String): AttributeWrapper
-            + getMethodByName(String): MethodWrapper
-            + getConstructorWrappers(): List
+        class ClassWrapper<T> <<abstract>> {
+            Class structure verification
+            ByteBuddy integration
+            Member discovery
         }
 
-        class GenericClassWrapper<T> {
-            + GenericClassWrapper(String, String, ClassWrapper, ClassWrapper[], String...)
-            + addAttribute(AttributeWrapper): void
-            + addMethod(MethodWrapper): void
-            + addConstructor(ConstructorWrapper): void
-        }
+        class AttributeWrapper
+        class MethodWrapper
+        class ConstructorWrapper
+        class GenericClassWrapper
 
-        class MethodWrapper<T,R> {
-            - paramTypes: Class<?>[]
-            - returnType: Class<R>
-            --
-            + invoke(Object, Object...): R
-            + verifyExistence(boolean): void
-        }
-
-        class AttributeWrapper<T,V> {
-            - field: Field
-            - type: Class<V>
-            --
-            + getValue(Object): V
-            + setValue(V, Object): void
-        }
-
-        class ConstructorWrapper<T> {
-            - paramTypes: Class<?>[]
-            - constructor: Constructor<T>
-            --
-            + invoke(Object...): T
+        class WrapperProperty {
+            Expected vs Actual tracking
+            Existence states
         }
 
         class StructuralLevenshtein {
-            + {static} structuralTestFactory(List<Wrapper>, DetailLevel): List<DynamicTest>
+            Test factory methods
+            Structural assertions
         }
 
-        ClassWrapper -up-|> Wrapper
-        GenericClassWrapper -up-|> ClassWrapper
-        ClassWrapper o-right- MethodWrapper
-        ClassWrapper o-right- AttributeWrapper
-        ClassWrapper o-right- ConstructorWrapper
+        class Utils {
+            Levenshtein distance
+            Type compatibility checks
+        }
     }
 
-    package "Constants Configuration" as constants {
-        class Constants <<configuration>> {
-            + {static} abstractClass(): String
-            + {static} concreteClass(): String
-            + {static} interfaceName(): String
-            + {static} abstractClassAttribute(): String
-            + {static} concreteClassAttribute(): String
-            + {static} interfaceMethod(): String
-            + {static} overwrittenMethod(): String
-            + {static} yearType(): Class<?>
-            + {static} speedType(): Class<?>
-            + {static} doorType(): Class<?>
-            + {static} engineCapacityType(): Class<?>
-            + {static} calcReturnType(): Class<?>
+    package "wrappers" <<Test Implementation>> #LightGreen {
+        class DrivableWrapper {
+            Tests Driveable interface
+        }
+
+        class AbstrWrapper {
+            Tests AbstractVehicle
+        }
+
+        class CarWrapper {
+            Tests Car class
+        }
+    }
+
+    package "test" <<JUnit Tests>> #LightYellow {
+        class TestManager {
+            @TestFactory methods
+            Structural tests
+            Behavioral tests
         }
     }
 }
 
-package "Test Wrappers" as wrappers {
-    class DriveableInterfaceWrapper {
-        + DriveableInterfaceWrapper()
+package "Student Submission\n(de.tum.cit.aet)" #LightCoral {
+    interface Driveable {
+        MAX_SPEED
+        start()
+        getSpeed()
     }
 
-    class AbstractVehicleWrapper {
-        + AbstractVehicleWrapper()
+    abstract class AbstractVehicle {
+        manufacturer
+        year
+        calculateCost()
     }
 
-    class CarWrapper {
-        - abstractVehicleWrapper: AbstractVehicleWrapper
-        - driveableWrapper: DriveableInterfaceWrapper
-        --
-        + CarWrapper(AbstractVehicleWrapper, DriveableInterfaceWrapper)
-        + getAbstractVehicleWrapper(): AbstractVehicleWrapper
-        + getDriveableWrapper(): DriveableInterfaceWrapper
+    class Car {
+        price
+        speed
     }
 
-    DriveableInterfaceWrapper -up-|> GenericClassWrapper
-    AbstractVehicleWrapper -up-|> GenericClassWrapper
-    CarWrapper -up-|> GenericClassWrapper
-    CarWrapper o-left- AbstractVehicleWrapper
-    CarWrapper o-left- DriveableInterfaceWrapper
-
-    DriveableInterfaceWrapper .down.> Constants : uses
-    AbstractVehicleWrapper .down.> Constants : uses
-    CarWrapper .down.> Constants : uses
+    Car --|> AbstractVehicle
+    Car ..|> Driveable
 }
 
-package "Test Suite" as test_suite {
-    class VehicleTest <<JUnit5>> {
-        - {static} driveableWrapper: DriveableInterfaceWrapper
-        - {static} abstractVehicleWrapper: AbstractVehicleWrapper
-        - {static} carWrapper: CarWrapper
-        --
-        + {static} setUp(): void
-        + structuralTests(): List<DynamicTest>
-        + testCarCreation(): void
-        + testAbstractVehicleAttributes(): void
-        + testCarSpecificAttributes(): void
-        + testStartEngine(): void
-        + testAcceleration(): void
-        + testBraking(): void
-        + testCalculateFuelConsumption(): void
-        + testGetMaxSpeed(): void
-        + testIsElectric(): void
-        + testGetVehicleInfo(): void
-        + testCompleteDrivingScenario(): void
-    }
+' Relationships between packages
+DrivableWrapper ..> Driveable : verifies
+AbstrWrapper ..> AbstractVehicle : verifies
+CarWrapper ..> Car : verifies
 
-    VehicleTest o-down- DriveableInterfaceWrapper : uses
-    VehicleTest o-down- AbstractVehicleWrapper : uses
-    VehicleTest o-down- CarWrapper : uses
-    VehicleTest .down.> Constants : uses
-    VehicleTest .right.> StructuralLevenshtein : uses factory
-}
+DrivableWrapper --|> ClassWrapper
+AbstrWrapper --|> ClassWrapper
+CarWrapper --|> ClassWrapper
 
-' Test relationships to source
-DriveableInterfaceWrapper .up.> Driveable : validates
-AbstractVehicleWrapper .up.> AbstractVehicle : validates
-CarWrapper .up.> Car : validates
+TestManager ..> CarWrapper : uses
+TestManager ..> AbstrWrapper : uses
+TestManager ..> DrivableWrapper : uses
 
-note right of Constants
-  **Single Point of Configuration**
-  All expected class names, method names,
-  attribute names, and types are defined here.
+TestManager ..> StructuralLevenshtein : generates tests
 
-  Benefits:
-  • Easy adaptation for variants
-  • Consistent across all tests
-  • Type-safe references
-  • Maintainable
+ClassWrapper --|> Wrapper
+AttributeWrapper --|> Wrapper
+MethodWrapper --|> Wrapper
+ConstructorWrapper --|> Wrapper
+
+Wrapper *-- WrapperProperty
+
+note right of StructuralLevenshtein
+    Generates JUnit DynamicTests
+    with configurable detail levels:
+    • ONE_FOR_EVERYTHING
+    • ONE_PER_CLASS
+    • ONE_PER_MEMBER_CATEGORY
 end note
 
-note left of StructuralLevenshtein
-  **Test Factory**
-  Automatically generates comprehensive
-  structural validation tests:
-  • Class existence
-  • Modifiers
-  • Inheritance
-  • Method signatures
-  • Attribute types
-  • Constructor parameters
+note right of ClassWrapper
+    Uses ByteBuddy for:
+    • Testing abstract classes
+    • Dynamic subclass creation
+    • Private member access fallback
 end note
 
-note bottom of VehicleTest
-  **Test Execution Order**
-  1. Structural tests (auto-generated)
-  2. Constructor validation
-  3. Attribute tests
-  4. Interface method tests
-  5. Abstract method override tests
-  6. Car-specific tests
-  7. Integration scenarios
+note bottom of "Student Submission\n(de.tum.cit.aet)"
+    Student code may have:
+    • Typos in names
+    • Minor structural deviations
+    • Different modifiers
+
+    Pattern handles these gracefully
+    using Levenshtein distance!
 end note
 
 @enduml

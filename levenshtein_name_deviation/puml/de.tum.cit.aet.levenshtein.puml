@@ -1,180 +1,152 @@
 @startuml
 skinparam classAttributeIconSize 0
 hide circle
+skinparam linetype ortho
 
-
-/'
-hide private members
-hide protected members
-hide package members
-'/
 !include https://raw.githubusercontent.com/patrik-csak/one-dark-plantuml-theme/v1.0.1/theme.puml
 
 package "de.cit.tum.de.levenshtein" as LEV {
 
-abstract class Wrapper<T> {
-~ name : WrapperProperty<String>
-~ modifiers : WrapperProperty<String>
-~ parentClassWrapper : ClassWrapper<T>
-~ existence : Existence
---
-+ Wrapper(parentClass: ClassWrapper<T>, expectedName: String, expectedModifiers: String)
-+ verifyExistence(throwAssertion : boolean) : void
-+ verifyExistence(failMessage : String, throwAssertion : boolean) : void
-+ getOverallExistence() : Existence
-+ getParentClassWrapper(): ClassWrapper<T>
-+ getExpectedName(): String
-+ toString(): String
-+ {abstract} expectedToString(): String
-+ {abstract} actualToString(): String
+    class WrapperProperty<T> {
+        ~expected: T
+        ~actual: T
+        ~existence: Existence
+        --
+        +WrapperProperty(expected: T)
+        +toString(): String
+        ..
+        <<enum>> Existence
+        UNCHECKED
+        EXACT
+        DEVIATES
+        MISSING
+    }
 
-~ findWithDeviation(): void
-~ verifyModifiers(modifierBitmask: int): void
-~ verifyType(typeWrapperProperty: WrapperProperty<Class<?>>, actualType: Class<?>): void
+    abstract class Wrapper<T> {
+        #name: WrapperProperty<String>
+        #modifiers: WrapperProperty<String>
+        #existence: Existence
+        -parentClassWrapper: ClassWrapper<T>
+        --
+        +Wrapper(parentClass, expectedName, expectedModifiers)
+        +verifyExistence(throwAssertion: boolean)
+        +getOverallExistence(): Existence
+        +getParentClassWrapper(): ClassWrapper<T>
+        +getExpectedName(): String
+        --
+        #{abstract} findWithDeviation()
+        #{abstract} parseExistence()
+        +{abstract} expectedToString(): String
+        +{abstract} actualToString(): String
+        --
+        #verifyModifiers(modifierBitmask: int)
+        #verifyType(typeWrapperProperty, actualType)
+    }
 
+    abstract class ClassWrapper<T> {
+        -expectedPackage: String
+        -clazz: Class<T>
+        #obj: T
+        ~superClassWrapper: WrapperProperty<ClassWrapper<?>>
+        ~interfaceWrappers: WrapperProperty<ClassWrapper<?>[]>
+        --
+        +ClassWrapper(expectedName, expectedPackage, ...)
+        +getClazz(): Class<T>
+        +{abstract} getObj(forceNew, useByteBuddy): Object
+        --
+        +verifySuperClass()
+        +verifyInterfaces()
+        +getAttributeWrappers(): List<Wrapper<T>>
+        +getMethodsWrappers(): List<Wrapper<T>>
+        +getConstructorWrappers(): List<Wrapper<T>>
+        --
+        +getDynamicSubclassObj(constructorParamTypes, ...): Object
+        +testGetter(attribute, getter)
+    }
 
-~ {abstract} parseExistence(): void
-~ parseExistence(properties: WrapperProperty<?>): void
+    class GenericClassWrapper<T> {
+        -clazz: Class<T>
+        --
+        +GenericClassWrapper(clz: Class<T>)
+        +getClazz(): Class<T>
+        +getObj(forceNew, useByteBuddy): Object
+    }
+    note right of GenericClassWrapper
+        Wrapper for existing classes.
+        Used for verifying inheritance
+        without checking existence.
+    end note
 
+    class AttributeWrapper<T,V> {
+        -field: Field
+        -type: WrapperProperty<Class<?>>
+        --
+        +AttributeWrapper(parentClass, expectedName, expectedType, ...)
+        +getValue(): V
+        +getValue(obj: Object): V
+        +setValue(value: V)
+        +setValue(value: V, obj: Object)
+    }
+
+    class MethodWrapper<T,R> {
+        -paramTypes: Class<?>[]
+        -returnType: WrapperProperty<Class<?>>
+        -method: Method
+        --
+        +MethodWrapper(parentClass, expectedName, expectedReturnType, ...)
+        +invoke(params...): R
+        +invokeOnSpecificObject(obj, params...): R
+    }
+
+    class ConstructorWrapper<T> {
+        ~paramTypes: Class<?>[]
+        -constructor: Constructor<T>
+        --
+        +ConstructorWrapper(parentClass, paramTypes, ...)
+        +invoke(args...): T
+        +getParamTypes(): Class<?>[]
+    }
+
+    class StructuralLevenshtein {
+        +{static} structuralTestTemplate(wrappers: List)
+        +{static} structuralTestFactory(detailsLevel, classWrappers...): List<DynamicTest>
+        ..
+        <<enum>> DetailLevel
+        ONE_FOR_EVERYTHING
+        ONE_PER_CLASS
+        ONE_PER_MEMBER_CATEGORY
+        ONE_PER_MEMBER
+    }
+
+    class Utils {
+        +{static} levenshteinDistance(s1, s2): int
+        +{static} isNameWithinDeviation(expected, actual, threshold): boolean
+        +{static} saveCast(val, castTo): Object
+        +{static} verifyType(typeWrapperProperty, actualType)
+        +{static} canContain(actualType, expectedType): boolean
+        +{static} unwrapPrimitive(type): Class<?>
+    }
+
+    ' Inheritance relationships
+    ClassWrapper --|> Wrapper
+    GenericClassWrapper --|> ClassWrapper
+    AttributeWrapper --|> Wrapper
+    MethodWrapper --|> Wrapper
+    ConstructorWrapper --|> Wrapper
+
+    ' Composition relationships
+    Wrapper *-- WrapperProperty : name, modifiers
+    AttributeWrapper *-- WrapperProperty : type
+    MethodWrapper *-- WrapperProperty : returnType
+    ClassWrapper *-- WrapperProperty : superClassWrapper,\ninterfaceWrappers
+
+    ' Associations
+    Wrapper --> ClassWrapper : parentClassWrapper
+    ClassWrapper --> ClassWrapper : superClassWrapper
+
+    ' Layout hints
+    WrapperProperty -[hidden]down- Utils
+    StructuralLevenshtein -[hidden]down- Utils
 }
 
-class AttributeWrapper<T,V> {
-- field : Field
-
-~ type : WrapperProperty<Class<?>>
---
-+AttributeWrapper(parentClass : ClassWrapper<T>, expectedName : String, expectedType : Class<V>, modifiers : String)
-
-+verifyExistence(throwAssertion: boolean): void
-
-+getValue() : V
-+getValue(obj : Object) : V
-+setValue(value : V) : void
-+setValue(value : V, obj : Object) : void
-
-+expectedToString(): String
-+actualToString(): String
-}
-
-
-
-class ConstructorWrapper {
-~ paramTypes : Class<?>[]
-- constructor : Constructor<T>
-  --
-+ ConstructorWrapper(parentClass : ClassWrapper<T>, paramTypes : Class<?>[], modifiers : String)
-+ verifyExistence(throwAssertion : boolean): void
-+ invoke(args : Object...) : T
-
-~ findWithDeviation(): void
-~ parseExistence(): void
-+ expectedToString(): String
-+ actualToString(): String
-  }
-
-
-class MethodWrapper {
-- paramTypes : Class<?>[]
-- returnType : WrapperProperty<Class<?>>
-  -method: Method
-  --
-  +MethodWrapper(parentClass: ClassWrapper<T>, expectedName: String, expectedReturnType: Class<R>, paramTypes: Class<?>[], modifiers: String)
-  +verifyExistence(throwAssertion: boolean): void
-  #findWithDeviation(): void
-  #parseExistence(): void
-  +invoke(params : Object...) : R
-  +invoke(objWrapper: ClassWrapper<?>, params: Object): R
-  +expectedToString(): String
-  +actualToString(): String
-  }
-
-
-class GenericClassWrapper {
--clazz: Class<T>
---
-+GenericClassWrapper(clz: Class<T>)
-+getClazz(): Class<T>
-+getObj(): Object
-}
-
-abstract class ClassWrapper {
--expectedPackage: String
--clazz: Class<T>
-#obj: T
-~superClassWrapper: WrapperProperty<ClassWrapper<?>>
-  ~interfaceWrappers: WrapperProperty<ClassWrapper<?>[]>
---
-+ClassWrapper(expectedName: String, expectedPackage: String, superClassWrapper: ClassWrapper<?>, interfaceWrappers: ClassWrapper<?>[], modifiers: String)
-+verifyExistence(throwAssertion: boolean): void
-+getClazz(): Class<T>
-+getObj(): Object
-#findWithDeviation(): void
-+verifySuperClass(): void
-+verifyInterfaces(): void
--{static} generateClassNameVariations(className: String): String[]
--{static} isClassNameWithinClassTestDeviation(expectedClassName: String, actualClassName: String): boolean
-+getAttributeWrappers(): List<Wrapper<T>>
-+getMethodsWrappers(): List<Wrapper<T>>
-+getConstructorWrappers(): List<Wrapper<T>>
-#parseExistence(): void
-+expectedToString(): String
-+actualToString(): String
-+equals(other: Object): boolean
-+toString(): String
-}
-
-class WrapperProperty {
-~expected: T
-~actual: T
-~existence: Existence
---
-+WrapperProperty(expected: T)
-+toString(): String
-}
-
-
-
-
-
-
-
-
-
-
-
-ConstructorWrapper -[hidden]-> AttributeWrapper
-AttributeWrapper -[hidden]-> MethodWrapper
-MethodWrapper -[hidden]-> ClassWrapper
-
-
-
-ConstructorWrapper -l|> Wrapper
-AttributeWrapper -l|> Wrapper
-MethodWrapper -l|> Wrapper
-ClassWrapper -u|> Wrapper
-
-GenericClassWrapper -up-|> ClassWrapper
-
-/'
-AttributeWrapper ..> WrapperProperty
-
-ConstructorWrapper .up.> ClassWrapper
-AttributeWrapper .up.> ClassWrapper
-MethodWrapper .up.> ClassWrapper
-
-
-Wrapper *-- ClassWrapper
-ClassWrapper o-- ClassWrapper
-
-
-AttributeWrapper *-left- WrapperProperty
-Wrapper -left-> WrapperProperty
-Wrapper o-left- WrapperProperty
-MethodWrapper *-left- WrapperProperty
-ClassWrapper -left-> WrapperProperty
-ClassWrapper o-left- WrapperProperty
-
-'/
-
-}
 @enduml
