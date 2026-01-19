@@ -13,19 +13,53 @@ import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 import static de.tum.cit.aet.levenshtein.Utils.*;
 import static org.assertj.core.api.Assertions.fail;
 
+/**
+ * Wrapper for class methods that verifies their existence, name, return type, parameter types, and modifiers
+ * using Levenshtein distance for fuzzy name matching.
+ *
+ * @param <T> the type of the class containing the method
+ * @param <R> the expected return type of the method
+ */
 public class MethodWrapper<T, R> extends Wrapper<T>
 {
+    /**
+     * The expected parameter types for the method.
+     */
     private final Class<?>[] paramTypes;
+
+    /**
+     * Wrapper for the expected and actual return type.
+     */
     private final WrapperProperty<Class<?>> returnType;
+
+    /**
+     * The actual method found via reflection.
+     */
     private Method method;
 
-
+    /**
+     * Constructs a new MethodWrapper for verifying a class method.
+     *
+     * @param parentClass the class wrapper containing this method
+     * @param expectedName the expected name of the method
+     * @param expectedReturnType the expected return type of the method
+     * @param paramTypes the expected parameter types for the method
+     * @param modifiers the expected modifiers (e.g., "public", "static")
+     */
     public MethodWrapper(ClassWrapper<T> parentClass, String expectedName, Class<R> expectedReturnType, Class<?>[] paramTypes, String... modifiers) {
         super(parentClass, expectedName, modifiers);
         this.paramTypes = paramTypes;
         this.returnType = new WrapperProperty<>(expectedReturnType);
     }
 
+    /**
+     * Constructs a new MethodWrapper for a method with no parameters.
+     *
+     * @param parentClass the class wrapper containing this method
+     * @param expectedName the expected name of the method
+     * @param expectedReturnType the expected return type of the method
+     * @param modifiers the expected modifiers (e.g., "public", "static")
+     */
     @SuppressWarnings("unused")
     public MethodWrapper(ClassWrapper<T> parentClass, String expectedName, Class<R> expectedReturnType, String... modifiers) {
         this(parentClass, expectedName, expectedReturnType, new Class<?>[0], modifiers);
@@ -93,9 +127,11 @@ public class MethodWrapper<T, R> extends Wrapper<T>
     }
 
     /**
-     * Invokes the method on the classes getObj()  (or if static using null as object).
-     * {@param params} Values for the methods parameters.
-     * @return The return value of the method, save-cast to R.
+     * Invokes the method on the class's default instance (or null for static methods).
+     * Use
+     *
+     * @param params values for the method's parameters
+     * @return the return value of the method, safely cast to R
      */
     @SuppressWarnings("unchecked")
     public R invoke(Object... params)
@@ -110,10 +146,11 @@ public class MethodWrapper<T, R> extends Wrapper<T>
     }
 
     /**
+     * Invokes the method on a specific object instance.
      *
-     * @param obj The object to invoke the method on. If null, uses getObj() of the parent class (or null for static methods).
-     * {@param params} Values for the methods parameters.
-     * @return The return value of the method, save-cast to R.
+     * @param obj the object to invoke the method on (null uses default instance or null for static methods)
+     * @param params values for the method's parameters
+     * @return the return value of the method, safely cast to R
      */
     @SuppressWarnings("unchecked")
     public R invokeOnSpecificObject(Object obj, Object... params)
