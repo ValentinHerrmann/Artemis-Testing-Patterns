@@ -1,10 +1,12 @@
-# Simplified Example - Concept Demonstration
+# Levenshtein - Code Example 01
 
 ## Overview
+This code example demonstrates several key object-oriented programming concepts in Java, including interface constants, interface implementation, abstract super classes, super-class inheritance, method overriding, method overloading, and constructor overloading. The example uses a simple vehicle hierarchy with a `Driveable` interface and an `AbstractVehicle` abstract class, along with a concrete `Car` class that implements and extends these structures.
 
-Die vereinfachten Klassen demonstrieren alle geforderten Konzepte mit minimaler Komplexität.
+It is designed to demonstrate the Levenshtein name deviation by providing clear and distinct names for each concept while maintaining a coherent structure.
 
-## Konzepte und wo sie demonstriert werden
+
+## Concepts Demonstrated
 
 ### 1. ✅ Interface-Constants
 **Datei**: `Driveable.java`
@@ -21,7 +23,7 @@ public interface Driveable {
 public class Car extends AbstractVehicle implements Driveable {
     @Override
     public void start() { ... }
-    
+
     @Override
     public double getSpeed() { ... }
 }
@@ -33,7 +35,7 @@ public class Car extends AbstractVehicle implements Driveable {
 public abstract class AbstractVehicle {
     protected String manufacturer;
     protected int year;
-    
+
     public abstract double calculateCost();  // Abstract method
 }
 ```
@@ -110,30 +112,6 @@ public Car(String manufacturer, int year) {
 
 ![Simplified Concepts UML](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/code_example_01/puml/simplified_concepts.puml)
 
-## Änderungen zur vorherigen Version
-
-### Driveable.java
-- ✅ Hinzugefügt: `MAX_SPEED` Konstante
-- ✅ Reduziert: Von 4 auf 2 Methoden
-- ✅ Entfernt: startEngine(), accelerate(), brake()
-- ✅ Behalten: start(), getSpeed()
-
-### AbstractVehicle.java
-- ✅ Reduziert: Von 5 auf 2 Attribute
-- ✅ Entfernt: model, currentSpeed, engineRunning
-- ✅ Behalten: manufacturer, year
-- ✅ Reduziert: Von 7 auf 5 Methoden
-- ✅ Entfernt: getModel(), isEngineRunning(), getMaxSpeed(), calculateFuelConsumption()
-- ✅ Behalten: getManufacturer(), getYear(), calculateCost() (abstract), getInfo()
-
-### Car.java
-- ✅ Vereinfacht: Von 5 auf 2 Attribute
-- ✅ Entfernt: numberOfDoors, fuelType, engineCapacity, maxSpeed, fuelConsumptionRate
-- ✅ Behalten: price (umbenannt von ursprünglich), speed
-- ✅ Hinzugefügt: Constructor Overloading (2 Konstruktoren)
-- ✅ Hinzugefügt: Method Overloading (calculateCost mit/ohne Parameter)
-- ✅ Vereinfacht: Interface-Implementierung auf 2 einfache Methoden
-- ✅ Entfernt: Komplexe Logik (accelerate, brake, fuel consumption, etc.)
 
 ## Verwendung
 
@@ -170,28 +148,3 @@ car.start();                  // Sets speed to 10.0
 double speed = car.getSpeed(); // Returns 10.0
 double max = Driveable.MAX_SPEED; // Access interface constant: 200.0
 ```
-
-## Vorteile der Vereinfachung
-
-1. ✅ **Fokus auf Konzepte**: Jedes Konzept ist klar erkennbar
-2. ✅ **Weniger Komplexität**: Einfacher zu verstehen und zu testen
-3. ✅ **Minimale Attribute**: Nur das Nötigste (2-3 statt 5+)
-4. ✅ **Klare Demonstrationen**: Jedes Konzept hat einen konkreten Anwendungsfall
-5. ✅ **Einfacher zu erweitern**: Basis für weitere Beispiele
-
-## Testbarkeit
-
-Alle Konzepte bleiben testbar:
-- Interface-Konstante: Zugriff auf `Driveable.MAX_SPEED`
-- Abstract Method: `calculateCost()` muss implementiert sein
-- Method Overloading: Beide `calculateCost` Varianten testen
-- Constructor Overloading: Beide Konstruktoren testen
-- Method Overriding: Vergleich mit Superklasse-Verhalten
-
-## Zusammenfassung
-
-✅ **Alle 7 Konzepte** sind implementiert  
-✅ **Minimale Komplexität** erreicht  
-✅ **Klar strukturiert** und dokumentiert  
-✅ **Leicht verständlich** für Lernzwecke
-
