@@ -12,18 +12,25 @@ import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 import static de.tum.cit.aet.levenshtein.Utils.*;
 import static org.assertj.core.api.Assertions.fail;
 
-
+/**
+ * Wrapper for class attributes (fields) that verifies their existence, name, type, and modifiers
+ * using Levenshtein distance for fuzzy matching.
+ *
+ * @param <T> the type of the class containing the attribute
+ * @param <V> the expected type of the attribute value
+ */
 public class AttributeWrapper<T, V> extends Wrapper<T>
 {
 
     /**
-     * The field representing the detected attribute in the class.
+     * The field (Reflection object) representing the detected attribute in the class.
      */
     private Field field;
+
     /**
-    * Just here to determine generic type V. Not used for anything else.
+     * Just here to determine generic type V. Not used for anything else.
      * Use {@link AttributeWrapper#type} to get the expected type.
-    */
+     */
     @SuppressWarnings("unused")
     private final Class<V> expectedType;
 
@@ -33,7 +40,14 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
      */
     private final WrapperProperty<Class<?>> type;
 
-
+    /**
+     * Constructs a new AttributeWrapper for verifying a class attribute.
+     *
+     * @param parentClass the class wrapper containing this attribute
+     * @param expectedName the expected name of the attribute
+     * @param expectedType the expected type of the attribute
+     * @param modifiers the expected modifiers (e.g., "public", "static", "final")
+     */
     public AttributeWrapper(ClassWrapper<T> parentClass, String expectedName, Class<V> expectedType, String... modifiers) {
         super(parentClass, expectedName, modifiers);
         this.expectedType = expectedType;
@@ -52,11 +66,29 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
                 name.expected, getParentClassWrapper().name.expected),throwAssertion);
     }
 
+    /**
+     * Retrieves the value of this attribute from a default instance.
+     * Uses the parent class's default object instance.
+     * To get the value from a specific instance, use {@link AttributeWrapper#getValue(Object)}.
+     * Uses {@link Assertions#fail()} to report access failures.
+     *
+     * @return the attribute value
+     */
     @SuppressWarnings("unused")
     public V getValue()
     {
         return getValue(null);
     }
+
+    /**
+     * Retrieves the value of this attribute from a specific object instance.
+     * If obj is null, creates or uses a default instance from the parent class.
+     * Attempts direct field access, falling back to getter methods if blocked by security manager.
+     * Uses {@link Assertions#fail()} to report access failures.
+     *
+     * @param obj the object instance to get the value from (null for static fields or default instance)
+     * @return the attribute value, safely cast to type V
+     */
     @SuppressWarnings("unchecked")
     public V getValue(Object obj) { // usually obj is type T, but could be a subclass
         verifyExistence(true);
@@ -99,11 +131,28 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
         return (V)saveCast(val, type.expected);
     }
 
+    /**
+     * Sets the value of this attribute on a default instance.
+     * Uses the parent class's default object instance. To set the value on a specific instance, use {@link AttributeWrapper#setValue(Object, Object)}.
+     * Fails if the attribute is declared final.
+     * Uses {@link Assertions#fail()} to report access failures.
+     *
+     * @param value the value to set
+     */
     public void setValue(V value)
     {
         setValue(value, null);
     }
 
+    /**
+     * Sets the value of this attribute on a specific object instance.
+     * If obj is null, creates or uses a default instance from the parent class.
+     * Fails if the attribute is declared final.
+     * Uses {@link Assertions#fail()} to report access failures.
+     *
+     * @param value the value to set
+     * @param obj the object instance to set the value on (null for static fields or default instance)
+     */
     public void setValue(Object value, Object obj)
     {
         verifyExistence(true);
@@ -111,7 +160,7 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
         boolean useByteBuddy = !Modifier.isPrivate(field.getModifiers());
         boolean isFinal = Modifier.isFinal(field.getModifiers());
         if(isFinal) {
-            fail(String.format("Cannot set value of attribute %s in %s because it is declared final (but should be).",
+            fail(String.format("Cannot set value of attribute %s in %s because it is declared final (but should not be).",
                     name.expected, getParentClassWrapper().name.expected));
         }
 
