@@ -1,8 +1,7 @@
 package de.tum.cit.aet.test;
 
-import de.tum.cit.aet.wrappers.*;
 import static de.tum.cit.aet.TestManager.*;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.saveCast;
+import static de.tum.cit.aet.levenshtein.Utils.saveCast;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;

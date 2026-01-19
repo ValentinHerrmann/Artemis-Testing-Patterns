@@ -14,9 +14,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
 
 import static de.tum.cit.aet.Constants.abstractClass;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
+import static de.tum.cit.aet.levenshtein.Utils.*;
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.levenshteinDistance;
+import static de.tum.cit.aet.levenshtein.Utils.levenshteinDistance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 

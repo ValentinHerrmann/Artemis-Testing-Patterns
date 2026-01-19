@@ -2,11 +2,9 @@ package de.tum.cit.aet.wrappers;
 
 import de.tum.cit.aet.TestSettings;
 import de.tum.cit.aet.levenshtein.*;
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 
 import static de.tum.cit.aet.Constants.*;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.saveCast;
+import static de.tum.cit.aet.levenshtein.Utils.saveCast;
 import static org.assertj.core.api.Assertions.fail;
 
 /**

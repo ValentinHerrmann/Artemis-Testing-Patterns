@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.LevenshteinUtils.*;
+import static de.tum.cit.aet.levenshtein.Utils.*;
 import static org.assertj.core.api.Assertions.fail;
 
 
