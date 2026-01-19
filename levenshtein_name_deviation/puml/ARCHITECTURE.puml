@@ -1,6 +1,7 @@
 @startuml
 skinparam classAttributeIconSize 0
 hide circle
+hide empty members
 skinparam linetype ortho
 skinparam packageStyle rectangle
 
@@ -10,7 +11,7 @@ title Levenshtein Name Deviation Pattern - Architecture Overview
 
 package "Test Framework\n(de.tum.cit.aet)" as AET {
 
-    package "levenshtein" <<Core Framework>> #LightBlue {
+    package "levenshtein" <<Core Framework>> #2C3E50 {
         class Wrapper<T> <<abstract>> {
             Fuzzy name matching
             Existence verification
@@ -44,7 +45,7 @@ package "Test Framework\n(de.tum.cit.aet)" as AET {
         }
     }
 
-    package "wrappers" <<Test Implementation>> #LightGreen {
+    package "wrappers" <<Test Implementation>> #27AE60 {
         class DrivableWrapper {
             Tests Driveable interface
         }
@@ -58,7 +59,7 @@ package "Test Framework\n(de.tum.cit.aet)" as AET {
         }
     }
 
-    package "test" <<JUnit Tests>> #LightYellow {
+    package "test" <<JUnit Tests>> #F39C12 {
         class TestManager {
             @TestFactory methods
             Structural tests
@@ -67,7 +68,7 @@ package "Test Framework\n(de.tum.cit.aet)" as AET {
     }
 }
 
-package "Student Submission\n(de.tum.cit.aet)" #LightCoral {
+package "Student Submission\n(de.tum.cit.aet)" as Sub #E74C3C {
     interface Driveable {
         MAX_SPEED
         start()
@@ -126,7 +127,7 @@ note right of ClassWrapper
     • Private member access fallback
 end note
 
-note bottom of "Student Submission\n(de.tum.cit.aet)"
+note bottom of "Sub"
     Student code may have:
     • Typos in names
     • Minor structural deviations
