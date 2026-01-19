@@ -70,6 +70,7 @@ public class StructuralLevenshtein {
                 break;
             case ONE_PER_MEMBER:
                 throw new RuntimeException("Detail level not yet supported: " + detailsLevel);
+                // TODO: Support detail level ONE_PER_MEMBER in future versions
                 /*
                 for (ClassWrapper<?> classWrap : classWrappers) {
 
