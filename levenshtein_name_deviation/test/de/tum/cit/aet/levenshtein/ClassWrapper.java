@@ -20,22 +20,64 @@ import static de.tum.cit.aet.levenshtein.Utils.levenshteinDistance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-
+/**
+ * Wrapper for classes that verifies their existence, name, modifiers, superclass, and interfaces
+ * using Levenshtein distance for fuzzy matching. Provides methods to instantiate objects
+ * and retrieve attribute, method, and constructor wrappers.
+ *
+ *
+ * @param <T> the type of the class being wrapped
+ */
 public abstract class ClassWrapper<T> extends Wrapper<T>
 {
+    /**
+     * The expected package name where the class should be located.
+     */
     private final String expectedPackage;
+
+    /**
+     * The actual class found via reflection.
+     */
     private Class<T> clazz;
+
+    /**
+     * A default instance of the class for testing purposes.
+     */
     protected T obj;
 
+    /**
+     * Wrapper for the expected and actual superclass.
+     */
     WrapperProperty<ClassWrapper<?>> superClassWrapper;
+
+    /**
+     * Wrapper for the expected and actual interfaces implemented by the class.
+     */
     WrapperProperty<ClassWrapper<?>[]> interfaceWrappers;
 
+    /**
+     * Constructs a new ClassWrapper with superclass and interface expectations.
+     *
+     * @param expectedName the expected name of the class
+     * @param expectedPackage the expected package name
+     * @param superClassWrapper the expected superclass wrapper (null if extends Object)
+     * @param interfaceWrappers the expected interface wrappers (null or empty if none)
+     * @param modifiers the expected modifiers (e.g., "public", "abstract")
+     */
     public ClassWrapper(String expectedName, String expectedPackage, ClassWrapper<?> superClassWrapper, ClassWrapper<?>[] interfaceWrappers, String... modifiers) {
         super(null, expectedName, modifiers);
         this.expectedPackage = expectedPackage;
         this.superClassWrapper = new WrapperProperty<>(superClassWrapper);
         this.interfaceWrappers = new WrapperProperty<>(interfaceWrappers == null ? new ClassWrapper<?>[0] : interfaceWrappers);
     }
+
+    /**
+     * Constructs a new ClassWrapper without superclass or interface expectations.
+     *
+     * @param expectedName the expected name of the class
+     * @param expectedPackage the expected package name
+     * @param modifiers the expected modifiers (e.g., "public", "abstract")
+     */
     public ClassWrapper(String expectedName, String expectedPackage, String... modifiers) {
         this(expectedName, expectedPackage, null, null, modifiers);
     }
@@ -50,12 +92,26 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
                 """, name.expected, expectedPackage),throwAssertion);
     }
 
+    /**
+     * Retrieves the actual class found via reflection.
+     * Verifies existence without throwing an assertion.
+     *
+     * @return the actual class, or null if not found
+     */
     public Class<T> getClazz()
     {
         verifyExistence(false);
         return clazz;
     }
 
+    /**
+     * Creates a dynamic subclass instance using ByteBuddy for abstract classes.
+     * This allows testing abstract classes by creating concrete implementations at runtime.
+     *
+     * @param constructorParamTypes the parameter types for the constructor to invoke
+     * @param constructorArgs the arguments to pass to the constructor
+     * @return a new instance of the dynamic subclass
+     */
     public Object getDynamicSubclassObj(Class<?>[] constructorParamTypes, Object... constructorArgs) {
         Object dynObj = null;
         try {
@@ -84,16 +140,36 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
     }
 
     /**
-    * Returns an instance of the class represented by this ClassWrapper.
-    * Should usually be overridden in concrete wrapper subclasses by calling getObj(constructor, constructorArgs).
+     * Returns an instance of the class represented by this ClassWrapper.
+     * Should usually be overridden in concrete wrapper subclasses by calling getObj(constructor, constructorArgs).
+     *
+     * @param forceNew whether to force creation of a new instance instead of reusing cached obj
      * @param useByteBuddy whether to use ByteBuddy to create a dynamic subclass instance (set to false for private elements!)
+     * @return an instance of the wrapped class
      */
     public abstract Object getObj(boolean forceNew, boolean useByteBuddy);
 
+    /**
+     * Returns an instance of the class, optionally creating a new one.
+     *
+     * @param useByteBuddy whether to use ByteBuddy for abstract classes
+     * @return an instance of the wrapped class which might have been cached
+     */
     public Object getObj(boolean useByteBuddy) {
         return getObj(false, useByteBuddy);
     }
 
+    /**
+     * Returns an instance of the class using a specific constructor.
+     * For abstract classes with useByteBuddy=true, creates a dynamic subclass instance.
+     * For concrete classes, invokes the specified constructor.
+     *
+     * @param forceNew whether to force creation of a new instance
+     * @param useByteBuddy whether to use ByteBuddy for abstract classes
+     * @param constructorWrapper the constructor wrapper to use for instantiation
+     * @param constructorArgs the arguments to pass to the constructor
+     * @return an instance of the wrapped class
+     */
     @SuppressWarnings("unchecked")
     public T getObj(boolean forceNew, boolean useByteBuddy, ConstructorWrapper<?> constructorWrapper, Object... constructorArgs) {
         if (obj == null || forceNew) {
@@ -167,6 +243,10 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         }
     }
 
+    /**
+     * Verifies that the actual superclass matches or is compatible with the expected superclass.
+     * Updates the superClassWrapper's existence state based on exact match, assignability, or mismatch.
+     */
     public void verifySuperClass() {
         Class<?> clz = clazz.getSuperclass();
         superClassWrapper.actual = clz == null || clz == Object.class ? null : new GenericClassWrapper<>(clz);
@@ -186,6 +266,12 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
             }
         }
     }
+
+    /**
+     * Verifies that the actual interfaces match the expected interfaces.
+     * Checks if all expected interfaces are implemented, allowing for additional interfaces.
+     * Updates the interfaceWrappers' existence state accordingly.
+     */
     public void verifyInterfaces() {
         Class<?>[] clzs = clazz.getInterfaces();
         interfaceWrappers.actual = Arrays.stream(clzs).sorted().map(GenericClassWrapper::new).toArray(ClassWrapper<?>[]::new);
@@ -280,7 +366,12 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         return deviation <= TestSettings.CLASS_NAME_DEVIATION_THRESHOLD;
     }
 
-
+    /**
+     * Retrieves all AttributeWrapper fields defined in this ClassWrapper subclass.
+     * Uses reflection to find all fields of type AttributeWrapper.
+     *
+     * @return a list of attribute wrappers for this class
+     */
     @SuppressWarnings("unchecked")
     public List<Wrapper<T>> getAttributeWrappers() {
         Class<?> currentClass = this.getClass();
@@ -295,6 +386,13 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
             }); 
         return attributeWrappers;
     }
+
+    /**
+     * Retrieves all MethodWrapper fields defined in this ClassWrapper subclass.
+     * Uses reflection to find all fields of type MethodWrapper.
+     *
+     * @return a list of method wrappers for this class
+     */
     @SuppressWarnings("unchecked")
     public List<Wrapper<T>> getMethodsWrappers() {
         Class<?> currentClass = this.getClass();
@@ -309,6 +407,13 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
                 });
         return methodWrappers;
     }
+
+    /**
+     * Retrieves all ConstructorWrapper fields defined in this ClassWrapper subclass.
+     * Uses reflection to find all fields of type ConstructorWrapper.
+     *
+     * @return a list of constructor wrappers for this class
+     */
     @SuppressWarnings("unchecked")
     public List<Wrapper<T>> getConstructorWrappers() {
         Class<?> currentClass = this.getClass();
@@ -420,6 +525,13 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
                 """, intro, expectedToString(), actualToString());
     }
 
+    /**
+     * Tests that a getter method returns the correct value for an attribute.
+     * Verifies that calling the getter on an instance returns the same value as the attribute.
+     *
+     * @param attribute the attribute wrapper to test
+     * @param getter the getter method wrapper to test
+     */
     @SuppressWarnings("unused")
     public void testGetter(AttributeWrapper<?,?> attribute, MethodWrapper<?,?> getter)  {
         attribute.verifyExistence(true);
