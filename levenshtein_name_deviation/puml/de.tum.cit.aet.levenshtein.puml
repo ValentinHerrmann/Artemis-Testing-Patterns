@@ -2,6 +2,7 @@
 skinparam classAttributeIconSize 0
 hide circle
 skinparam linetype ortho
+hide empty members
 
 !include https://raw.githubusercontent.com/patrik-csak/one-dark-plantuml-theme/v1.0.1/theme.puml
 
