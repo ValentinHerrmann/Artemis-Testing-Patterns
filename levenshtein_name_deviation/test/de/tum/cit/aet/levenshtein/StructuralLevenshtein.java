@@ -8,15 +8,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility class for generating structural validation tests using wrapper objects.
+ * Provides methods to create JUnit DynamicTests that verify class structures with various levels of detail.
+ */
 public class StructuralLevenshtein {
 
+    /**
+     * Enumeration defining the level of detail for structural test generation.
+     */
     public enum DetailLevel {
+        /** Creates a single test for all structural elements */
         ONE_FOR_EVERYTHING,
+        /** Creates one test per class, including all its members */
         ONE_PER_CLASS,
+        /** Creates separate tests for class, constructors, attributes, and methods */
         ONE_PER_MEMBER_CATEGORY,
+        /** Creates individual tests for each member (not yet implemented) */
         ONE_PER_MEMBER
     }
 
+    /**
+     * Template method for structural testing that checks wrapper existence states.
+     * Collects all wrappers with MISSING or DEVIATES states and fails if any are found.
+     *
+     * @param wrappers the list of wrappers to verify
+     */
     public static void structuralTestTemplate(List<? extends Wrapper<?>> wrappers) {
         List<String> msg = new ArrayList<>();
         for(Wrapper<?> wrap : wrappers) {
@@ -32,8 +49,14 @@ public class StructuralLevenshtein {
         Assertions.assertThat(msg).withFailMessage("\n"+String.join("\n", msg)+"\n").isEmpty();
     }
 
-
-
+    /**
+     * Factory method for creating dynamic structural tests based on class wrappers.
+     * Generates JUnit DynamicTests organized according to the specified detail level.
+     *
+     * @param detailsLevel the level of detail for test organization
+     * @param classWrappers the class wrappers to generate tests for
+     * @return a list of DynamicTest objects ready to be used in a @TestFactory method
+     */
     public static List<DynamicTest> structuralTestFactory(DetailLevel detailsLevel, ClassWrapper<?>... classWrappers) {
         List<DynamicTest> tests = new ArrayList<>();
         Map<String,List<Wrapper<?>>> wrappers = new HashMap<>();
