@@ -8,7 +8,14 @@ java {
         languageVersion = JavaLanguageVersion.of(17)
     }
 }
-version = '1.0.0'
+def baseVersion = '1.0.0'
+def releaseTag = System.getenv('GITHUB_REF_TYPE') == 'tag' ? System.getenv('GITHUB_REF_NAME') : null
+if (releaseTag) {
+    version = releaseTag.startsWith('v') ? releaseTag.substring(1) : releaseTag
+} else {
+    def runNumber = System.getenv('GITHUB_RUN_NUMBER')
+    version = runNumber ? "${baseVersion}.${runNumber}" : baseVersion
+}
 group = 'de.tum.cit.aet'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
