@@ -23,3 +23,5 @@ jobs:
         run: cd levenshtein_name_deviation && ./gradlew publishMavenPublicationToGitHubPackagesRepository --info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
