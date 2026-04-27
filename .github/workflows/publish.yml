@@ -1,8 +1,7 @@
 name: Publish package to GitHub Packages
 on:
   release:
-    types: [created]
-  push:
+    types: [published]
   workflow_dispatch:
 jobs:
   publish:
@@ -20,6 +19,6 @@ jobs:
         uses: gradle/actions/setup-gradle@017a9effdb900e5b5b2fddfb590a105619dca3c3 # v4.4.2
 
       - name: Publish package
-        run: cd levenshtein_name_deviation && ./gradlew publish
+        run: cd levenshtein_name_deviation && ./gradlew publish --info
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
