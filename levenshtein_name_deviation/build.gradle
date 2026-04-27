@@ -57,6 +57,16 @@ sourceSets {
     }
 }
 
+tasks.register('testJar', Jar) {
+    archiveClassifier.set('')
+    dependsOn tasks.named('testClasses')
+    from sourceSets.test.output
+}
+
+tasks.named('jar') {
+    enabled = false
+}
+
 def forbiddenPackageFolders = [ //(2)
                                 "$studentOutputDir/ch/qos/logback/",
                                 "$studentOutputDir/com/github/javaparser/",
@@ -95,8 +105,8 @@ test {
 publishing {
     publications {
         maven(MavenPublication) {
-            from components.java
             artifactId = 'levenshtein-name-deviation-pattern'
+            artifact tasks.named('testJar')
         }
     }
         repositories {
