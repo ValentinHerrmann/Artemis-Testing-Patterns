@@ -92,15 +92,17 @@ publishing {
             artifactId = 'levenshtein-name-deviation-pattern'
         }
     }
-  repositories {
-    maven {
-      name = "GitHubPackages"
-      url = "https://maven.pkg.github.com/ValentinHerrmann/Name-Deviation"
-      credentials {
-        username = System.getenv("GITHUB_ACTOR")
-        password = System.getenv("GITHUB_TOKEN")
-      }
-    }
-  }
+        repositories {
+                maven {
+                        name = "GitHubPackages"
+                        // Default to the repository running the workflow so GITHUB_TOKEN has package write access.
+                        def packageRepository = System.getenv("GH_PACKAGES_REPOSITORY") ?: System.getenv("GITHUB_REPOSITORY") ?: "ls1intum/Artemis-Testing-Patterns"
+                        url = "https://maven.pkg.github.com/${packageRepository}"
+                        credentials {
+                                username = System.getenv("GH_PACKAGES_USER") ?: System.getenv("GITHUB_ACTOR")
+                                password = System.getenv("GH_PACKAGES_TOKEN") ?: System.getenv("GITHUB_TOKEN")
+                        }
+                }
+        }
 }
 
