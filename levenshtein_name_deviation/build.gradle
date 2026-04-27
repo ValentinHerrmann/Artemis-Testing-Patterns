@@ -85,7 +85,7 @@ test {
 }
 
 
-publishing {
+publish {
     publications {
         maven(MavenPublication) {
             from components.java
