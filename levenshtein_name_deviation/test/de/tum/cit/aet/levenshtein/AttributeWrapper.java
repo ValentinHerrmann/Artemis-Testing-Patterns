@@ -1,15 +1,17 @@
-package de.tum.cit.aet.levenshtein;
+package levenshtein;
 
-import de.tum.cit.aet.TestSettings;
 import de.tum.in.test.api.util.ReflectionTestUtils;
+import test.TestSettings;
+
 import org.assertj.core.api.Assertions;
 
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.Utils.*;
+import test.Messages;
+import static levenshtein.WrapperProperty.Existence.*;
+import static levenshtein.Utils.*;
 import static org.assertj.core.api.Assertions.fail;
 
 /**
@@ -59,11 +61,8 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("""
-                Attribute %s in class %s is not implemented as expected.
-                --> See structural Tests for details about this.
-                --> This may lead subsequent tests to fail.""",
-                name.expected, getParentClassWrapper().name.expected),throwAssertion);
+        super.verifyExistence(String.format(Messages.ATTRIBUTE_NOT_IMPLEMENTED,
+                name.expected, getParentClassWrapper().name.expected), throwAssertion);
     }
 
     /**
@@ -117,14 +116,14 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
                     // Print both exceptions for debugging and fail
                     try { System.err.println("[AttributeWrapper] primary access blocked, getter fallback failed for '" + name.expected + "'"); e.printStackTrace(System.err); ex2.printStackTrace(System.err); } catch (Throwable ignore) {}
                     String causeMsg = ex2 == null ? (e == null ? "<no-exception>" : e.toString()) : ex2.toString();
-                    Assertions.fail(String.format("Could not access value of attribute '%s' in %s. Cause: %s",
+                    Assertions.fail(String.format(Messages.ATTRIBUTE_ACCESS_FAILED,
                             name.expected, getParentClassWrapper().name.expected, causeMsg));
                 }
             } else {
                 // Not a security exception -> fail with original exception
                 try { System.err.println("[AttributeWrapper] valueForNonPublicAttribute failed for '" + name.expected + "'"); e.printStackTrace(System.err); } catch (Throwable ignore) {}
                 String causeMsg = e == null ? "<no-exception>" : e.toString();
-                Assertions.fail(String.format("Could not access value of attribute '%s' in %s. Cause: %s",
+                Assertions.fail(String.format(Messages.ATTRIBUTE_ACCESS_FAILED,
                         name.expected, getParentClassWrapper().name.expected, causeMsg));
             }
         }
@@ -139,10 +138,12 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
      *
      * @param value the value to set
      */
-    public void setValue(V value)
+    public void setValue(Object value)
     {
-        setValue(value, null);
+        setValue(null, value);
     }
+
+
 
     /**
      * Sets the value of this attribute on a specific object instance.
@@ -150,17 +151,17 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
      * Fails if the attribute is declared final.
      * Uses {@link Assertions#fail()} to report access failures.
      *
-     * @param value the value to set
      * @param obj the object instance to set the value on (null for static fields or default instance)
+     * @param value the value to set
      */
-    public void setValue(Object value, Object obj)
+    public void setValue(Object obj, Object value)
     {
         verifyExistence(true);
 
         boolean useByteBuddy = !Modifier.isPrivate(field.getModifiers());
         boolean isFinal = Modifier.isFinal(field.getModifiers());
         if(isFinal) {
-            fail(String.format("Cannot set value of attribute %s in %s because it is declared final (but should not be).",
+            fail(String.format(Messages.ATTRIBUTE_FINAL_CANNOT_SET,
                     name.expected, getParentClassWrapper().name.expected));
         }
 
@@ -171,7 +172,7 @@ public class AttributeWrapper<T, V> extends Wrapper<T>
         }
         catch (AssertionError e) {  fail(e.getMessage()); }
         catch (Exception e) {
-            Assertions.fail(String.format("Could not set value of attribute '%s' in %s.",
+            Assertions.fail(String.format(Messages.ATTRIBUTE_SET_FAILED,
                     name.expected, getParentClassWrapper().name.expected), e);
         }
     }

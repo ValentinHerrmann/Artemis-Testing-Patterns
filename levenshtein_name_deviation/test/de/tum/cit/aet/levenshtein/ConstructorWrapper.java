@@ -1,4 +1,4 @@
-package de.tum.cit.aet.levenshtein;
+package levenshtein;
 
 
 import org.assertj.core.api.Assertions;
@@ -9,8 +9,9 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static de.tum.cit.aet.levenshtein.Utils.toWrapperType;
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
+import test.Messages;
+import static levenshtein.Utils.toWrapperType;
+import static levenshtein.WrapperProperty.Existence.*;
 
 /**
  * Wrapper for class constructors that verifies their existence, parameter types, and modifiers.
@@ -67,12 +68,8 @@ public class ConstructorWrapper<T> extends Wrapper<T>
         {
         */
 
-            super.verifyExistence(String.format("""
-                Constructor %s in class %s is not implemented as expected.
-                --> See structural Tests for details about this.
-                --> This may lead subsequent tests to fail.
-                """,
-                this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
+            super.verifyExistence(String.format(Messages.CONSTRUCTOR_NOT_IMPLEMENTED,
+                this.expectedToString(), getParentClassWrapper().name.expected), throwAssertion);
         //}
     }
 
@@ -124,7 +121,7 @@ public class ConstructorWrapper<T> extends Wrapper<T>
             }
         }
         catch (Exception e) {
-            Assertions.fail(String.format("Failed to invoke constructor '%s' in class %s: %s", this.expectedToString(), getParentClassWrapper().name.expected, e.getMessage()));
+            Assertions.fail(String.format(Messages.CONSTRUCTOR_INVOCATION_FAILED, this.expectedToString(), getParentClassWrapper().name.expected, e.getMessage()));
         }
         return null;
     }

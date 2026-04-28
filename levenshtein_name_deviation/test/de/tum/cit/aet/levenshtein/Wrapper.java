@@ -1,12 +1,13 @@
-package de.tum.cit.aet.levenshtein;
+package levenshtein;
 
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence;
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.Utils.*;
+import static levenshtein.WrapperProperty.Existence;
+import static levenshtein.WrapperProperty.Existence.*;
+import static levenshtein.Utils.*;
 
 import org.assertj.core.api.Assertions;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import test.Messages;
 
  /**
  * Abstract base class for wrapping and verifying Java reflection elements (classes, methods, fields, constructors).
@@ -176,26 +177,15 @@ public abstract class Wrapper<T>
         return switch (existence) {
             case EXACT -> expectedToString();
             case DEVIATES -> String.format(
-                    """
-                    !! DEVIATION in %s !!
-                    If possible actual will be used for further testing.
-                    Expect:\t%s
-                    Actual:\t%s
-                    """,
-                    getParentClassWrapper().name.expected, expectedToString(),actualToString()
+                    Messages.WRAPPER_DEVIATION,
+                    getParentClassWrapper().name.expected, expectedToString(), actualToString()
             );
             case MISSING -> String.format(
-                    """
-                    X MISSING in %s X
-                    Expect:\t%s
-                    """,
+                    Messages.WRAPPER_MISSING,
                     getParentClassWrapper().name.expected, expectedToString()
             );
             case UNCHECKED -> String.format(
-                    """
-                    ? UNCHECKED in %s ?
-                    Expect:\t%s
-                    """,
+                    Messages.WRAPPER_UNCHECKED,
                     getParentClassWrapper().name.expected, expectedToString()
             );
         };

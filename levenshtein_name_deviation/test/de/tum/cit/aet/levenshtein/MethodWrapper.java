@@ -1,16 +1,17 @@
-package de.tum.cit.aet.levenshtein;
+package levenshtein;
 
 
-import de.tum.cit.aet.TestSettings;
 import de.tum.in.test.api.util.ReflectionTestUtils;
+import test.TestSettings;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.Utils.*;
+import test.Messages;
+import static levenshtein.WrapperProperty.Existence.*;
+import static levenshtein.Utils.*;
 import static org.assertj.core.api.Assertions.fail;
 
 /**
@@ -68,10 +69,7 @@ public class MethodWrapper<T, R> extends Wrapper<T>
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("""
-                Method %s in class %s is not implemented as expected.
-                --> See structural Tests for details about this.
-                --> This may lead subsequent tests to fail.""", this.expectedToString(), getParentClassWrapper().name.expected),throwAssertion);
+        super.verifyExistence(String.format(Messages.METHOD_NOT_IMPLEMENTED, this.expectedToString(), getParentClassWrapper().name.expected), throwAssertion);
     }
 
     @Override
@@ -174,7 +172,7 @@ public class MethodWrapper<T, R> extends Wrapper<T>
             return (R)saveCast(val, returnType.expected);
         }
         catch(Exception e) {
-            fail("Calling method %s on class %s threw an exception.",actualToString(), getParentClassWrapper().name.expected);
+            fail(Messages.METHOD_INVOCATION_EXCEPTION, actualToString(), getParentClassWrapper().name.expected);
         }
         return null;
     }

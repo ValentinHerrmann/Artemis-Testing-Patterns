@@ -1,6 +1,7 @@
-package de.tum.cit.aet.levenshtein;
+package levenshtein;
 
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
+import test.Messages;
+import static levenshtein.WrapperProperty.Existence.*;
 
 public class Utils
 {
@@ -70,7 +71,7 @@ public class Utils
 
     public static Object saveCast(Object val, Class<?> castTo, boolean allowNull) {
         if(!allowNull && val == null) {
-            throw new IllegalArgumentException("A value was null that is not allowed to be null");
+            throw new IllegalArgumentException(Messages.NULL_NOT_ALLOWED);
         }
         if(val == null) {
             return null;

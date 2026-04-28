@@ -1,6 +1,4 @@
-package de.tum.cit.aet.levenshtein;
-
-import de.tum.cit.aet.TestSettings;
+package levenshtein;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -10,13 +8,14 @@ import java.util.stream.Collectors;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
+import test.Messages;
+import test.TestSettings;
+
 import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
 
-import static de.tum.cit.aet.Constants.abstractClass;
-import static de.tum.cit.aet.levenshtein.Utils.*;
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.Utils.levenshteinDistance;
+import static levenshtein.Utils.*;
+import static levenshtein.WrapperProperty.Existence.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -85,11 +84,7 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
     @Override
     public void verifyExistence(boolean throwAssertion)
     {
-        super.verifyExistence(String.format("""
-                Class %s in package %s is not implemented as expected.
-                --> See structural Tests for details about this.
-                --> This may lead subsequent tests to fail.
-                """, name.expected, expectedPackage),throwAssertion);
+        super.verifyExistence(String.format(Messages.CLASS_NOT_IMPLEMENTED, name.expected, expectedPackage), throwAssertion);
     }
 
     /**
@@ -131,9 +126,7 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
             if (e.getCause() != null && e.getCause().getMessage() != null) {
                 errorMsg += " (Cause: " + e.getCause().getMessage() + ")";
             }
-            fail("Creating instances of a subclass of %s failed. Constructor may not be implemented correctly. " +
-                            "This might also cause subsequent tests to fail. Error: %s",
-                    abstractClass(), errorMsg);
+            fail(Messages.CLASS_SUBCLASS_INSTANTIATION_FAILED, getClazz().getSimpleName(), errorMsg);
 
         }
         return dynObj;
@@ -182,19 +175,16 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
                 obj = (T)saveCast(dynObj, getClazz());
             }
             else {
-                if(Modifier.isAbstract(clazz.getModifiers())) {
-                    fail(String.format("Cannot instantiate abstract class %s directly.\n" +
-                            "This may lead subsequent tests to fail.", name.actual));
+                if(Modifier.isAbstract(getClazz().getModifiers())) {
+                    fail(String.format(Messages.CLASS_CANNOT_INSTANTIATE_ABSTRACT, name.actual));
                 }
-                if(Modifier.isInterface(clazz.getModifiers())) {
-                    fail(String.format("Cannot instantiate interface %s directly.\n" +
-                            "This may lead subsequent tests to fail.", name.actual));
+                if(Modifier.isInterface(getClazz().getModifiers())) {
+                    fail(String.format(Messages.CLASS_CANNOT_INSTANTIATE_INTERFACE, name.actual));
                 }
                 Assertions.assertThatCode(() ->
                             obj = (T)constructorWrapper.invoke(constructorArgs)
                         )
-                        .withFailMessage("Creating instances of class %s failed. Constructor may not be implemented correctly.\n" +
-                                "This may lead subsequent tests to fail.",name.expected)
+                        .withFailMessage(Messages.CLASS_INSTANTIATION_FAILED, name.expected)
                         .doesNotThrowAnyException();
                 return obj;
             }
@@ -210,7 +200,12 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
     protected void findWithDeviation() {
         // First try exact match
         try {
-            clazz = (Class<T>)Class.forName(expectedPackage + "." + name.expected);
+            if(expectedPackage.equals("")) {
+                clazz = (Class<T>)Class.forName(name.expected);
+            }
+            else {
+                clazz = (Class<T>)Class.forName(expectedPackage + "." + name.expected);
+            }
             name.actual = clazz.getSimpleName();
             name.existence = EXACT;
         }
@@ -514,9 +509,9 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         parseExistence();
         String intro = switch (existence) {
             case EXACT -> expectedToString();
-            case DEVIATES -> "!! DEVIATION !! \nIf possible actual will be used for further testing";
-            case MISSING -> "X MISSING X";
-            default -> "Existence unchecked";
+            case DEVIATES -> Messages.CLASS_DEVIATION;
+            case MISSING -> Messages.CLASS_MISSING;
+            default -> Messages.CLASS_UNCHECKED;
         } + " in package %s".formatted(expectedPackage);
         return String.format("""
                 %s
@@ -546,10 +541,7 @@ public abstract class ClassWrapper<T> extends Wrapper<T>
         Object actual = getter.invokeOnSpecificObject(obj);
 
         assertThat(expected).withFailMessage(
-                """
-                        Getter '%s' does not return the attribute's value.
-                        Expected: %s
-                        Actual: %s""",
+                Messages.GETTER_WRONG_VALUE,
             getter.actualToString(),
             expected.toString(),
             actual != null ? actual.toString() : "null"
