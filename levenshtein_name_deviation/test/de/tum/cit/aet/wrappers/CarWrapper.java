@@ -2,8 +2,8 @@ package de.tum.cit.aet.wrappers;
 
 import de.tum.cit.aet.levenshtein.*;
 
-import static de.tum.cit.aet.Constants.*;
-import static de.tum.cit.aet.TestSettings.BASE_PACKAGE;
+import static de.tum.cit.aet.test.Constants.*;
+import static de.tum.cit.aet.test.TestSettings.BASE_PACKAGE;
 import static org.assertj.core.api.Assertions.fail;
 
 import org.assertj.core.api.Assertions;

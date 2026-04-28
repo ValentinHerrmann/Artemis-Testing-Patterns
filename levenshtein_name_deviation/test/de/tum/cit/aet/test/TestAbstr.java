@@ -1,8 +1,8 @@
 package de.tum.cit.aet.test;
 
-import static de.tum.cit.aet.Constants.*;
-import static de.tum.cit.aet.TestManager.*;
 import static de.tum.cit.aet.levenshtein.Utils.*;
+import static de.tum.cit.aet.test.Constants.*;
+import static de.tum.cit.aet.test.TestManager.*;
 import static org.assertj.core.api.Assertions.fail;
 
 import org.assertj.core.api.Assertions;
@@ -44,7 +44,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * }</pre>
  *
  * <h3>3. Test Organization Pattern</h3>
- * <p>All test methods are {@code public static} to allow delegation from {@link de.tum.cit.aet.TestManager}:</p>
+ * <p>All test methods are {@code public static} to allow delegation from {@link de.tum.cit.aet.test.TestManager}:</p>
  * <pre>{@code
  * // In TestAbstr.java:
  * public static void testConstructorManufacturer() {
@@ -136,7 +136,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * </ul>
  *
  * @see de.tum.cit.aet.wrappers.AbstrWrapper
- * @see de.tum.cit.aet.TestManager
+ * @see de.tum.cit.aet.test.TestManager
  * @see de.tum.cit.aet.levenshtein.ClassWrapper#getDynamicSubclassObj
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

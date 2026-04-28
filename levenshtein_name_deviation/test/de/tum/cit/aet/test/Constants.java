@@ -1,4 +1,4 @@
-package de.tum.cit.aet;
+package de.tum.cit.aet.test;
 
 import java.io.FileWriter;
 import java.lang.reflect.Method;

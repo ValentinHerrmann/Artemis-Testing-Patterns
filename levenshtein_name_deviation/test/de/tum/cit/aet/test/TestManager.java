@@ -1,6 +1,6 @@
-package de.tum.cit.aet;
+package de.tum.cit.aet.test;
 
-import de.tum.cit.aet.test.*;
+import de.tum.cit.aet.levenshtein.LevenshteinTest;
 import de.tum.cit.aet.wrappers.*;
 
 

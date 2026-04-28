@@ -1,7 +1,7 @@
 package de.tum.cit.aet.test;
 
-import static de.tum.cit.aet.TestManager.*;
 import static de.tum.cit.aet.levenshtein.Utils.saveCast;
+import static de.tum.cit.aet.test.TestManager.*;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
@@ -121,7 +121,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  *
  * @see de.tum.cit.aet.wrappers.DrivableWrapper
  * @see TestImpl
- * @see de.tum.cit.aet.TestManager
+ * @see de.tum.cit.aet.test.TestManager
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestInterface {

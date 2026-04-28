@@ -1,10 +1,10 @@
 package de.tum.cit.aet.wrappers;
 
-import de.tum.cit.aet.TestSettings;
 import de.tum.cit.aet.levenshtein.*;
+import de.tum.cit.aet.test.TestSettings;
 
-import static de.tum.cit.aet.Constants.*;
 import static de.tum.cit.aet.levenshtein.Utils.saveCast;
+import static de.tum.cit.aet.test.Constants.*;
 import static org.assertj.core.api.Assertions.fail;
 
 /**

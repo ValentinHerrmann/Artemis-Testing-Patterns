@@ -1,4 +1,4 @@
-package de.tum.cit.aet;
+package de.tum.cit.aet.test;
 
 /**
  * Central configuration class for the Levenshtein Name Deviation Testing Pattern.
@@ -14,7 +14,7 @@ package de.tum.cit.aet;
  *
  * <pre>{@code
  * // Example: When looking for class "Car", the framework searches:
- * // de.tum.cit.aet.Car
+ * // .Car
  * }</pre>
  *
  * <h3>2. Debugging Mode</h3>
@@ -94,26 +94,41 @@ package de.tum.cit.aet;
  *   <li><b>Exams:</b> Consider slightly stricter thresholds to ensure competency</li>
  * </ol>
  *
- * @see de.tum.cit.aet.levenshtein.Utils#isNameWithinDeviation(String, String, int)
- * @see de.tum.cit.aet.levenshtein.ClassWrapper
+ * @see .levenshtein.Utils#isNameWithinDeviation(String, String, int)
+ * @see .levenshtein.ClassWrapper
  * @see Constants
  */
 public class TestSettings
 {
     /**
+     * Supported languages for assertion/feedback messages.
+     * Set {@link #LANGUAGE} to switch between German and English output.
+     */
+    public enum Language { DEUTSCH, ENGLISH }
+
+    /**
+     * The language used for assertion and feedback messages shown to students.
+     * <ul>
+     *   <li>{@code Language.DEUTSCH} – German messages (default)</li>
+     *   <li>{@code Language.ENGLISH} – English messages</li>
+     * </ul>
+     */
+    public static final Language LANGUAGE = Language.DEUTSCH;
+
+    /**
      * The variant of the exercise being tested.
      * Used in conjunction with the Exercise Variants pattern.
      */
-    static Constants.Variant variant = Constants.Variant.DEFAULT;
+    //static Constants.Variant variant = Constants.Variant.DEFAULT;
 
     /**
      * The base package where student code is expected to be located.
      * All ClassWrapper instances search for classes in this package by default.
      *
-     * <p><b>Example:</b> With {@code BASE_PACKAGE = "de.tum.cit.aet"}, the framework
-     * searches for class "Car" at {@code de.tum.cit.aet.Car}.</p>
+     * <p><b>Example:</b> With {@code BASE_PACKAGE = ""}, the framework
+     * searches for class "Car" at {@code .Car}.</p>
      */
-    public static final String BASE_PACKAGE = "de.tum.cit.aet";
+    public static final String BASE_PACKAGE = "";
 
     /**
      * Enable debugging mode for tests. When set to true, tests will
@@ -153,7 +168,7 @@ public class TestSettings
      *   <li>30% - Lenient, may accept unintended matches</li>
      * </ul>
      */
-    public static final int CLASS_NAME_DEVIATION_THRESHOLD = 10;
+    public static final int CLASS_NAME_DEVIATION_THRESHOLD = 20;
 
     /**
      * Maximum allowed deviation (as a percentage) for method name matching.
@@ -166,7 +181,7 @@ public class TestSettings
      *   <li>"start" vs "stat" → 20% → MISSING</li>
      * </ul>
      */
-    public static final int METHOD_NAME_DEVIATION_THRESHOLD = 10;
+    public static final int METHOD_NAME_DEVIATION_THRESHOLD = 20;
 
     /**
      * Maximum allowed deviation (as a percentage) for attribute name matching.
@@ -179,7 +194,7 @@ public class TestSettings
      *   <li>"price" vs "pric" → 20% → MISSING</li>
      * </ul>
      */
-    public static final int ATTRIBUTE_NAME_DEVIATION_THRESHOLD = 10;
+    public static final int ATTRIBUTE_NAME_DEVIATION_THRESHOLD = 20;
     
 
 }
