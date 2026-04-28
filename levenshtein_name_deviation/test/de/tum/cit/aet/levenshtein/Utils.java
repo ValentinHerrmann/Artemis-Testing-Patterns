@@ -1,7 +1,7 @@
-package levenshtein;
+package de.tum.cit.aet.levenshtein;
 
-import test.Messages;
-import static levenshtein.WrapperProperty.Existence.*;
+import de.tum.cit.aet.test.Messages;
+import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 
 public class Utils
 {

@@ -1,4 +1,4 @@
-package levenshtein;
+package de.tum.cit.aet.levenshtein;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import test.Messages;
-import test.TestSettings;
+import de.tum.cit.aet.test.Messages;
+import de.tum.cit.aet.test.TestSettings;
 
 import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
 
-import static levenshtein.Utils.*;
-import static levenshtein.WrapperProperty.Existence.*;
+import static de.tum.cit.aet.levenshtein.Utils.*;
+import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 

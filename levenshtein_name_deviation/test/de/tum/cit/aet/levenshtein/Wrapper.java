@@ -1,13 +1,13 @@
-package levenshtein;
+package de.tum.cit.aet.levenshtein;
 
-import static levenshtein.WrapperProperty.Existence;
-import static levenshtein.WrapperProperty.Existence.*;
-import static levenshtein.Utils.*;
+import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence;
+import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
+import static de.tum.cit.aet.levenshtein.Utils.*;
 
 import org.assertj.core.api.Assertions;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import test.Messages;
+import de.tum.cit.aet.test.Messages;
 
  /**
  * Abstract base class for wrapping and verifying Java reflection elements (classes, methods, fields, constructors).

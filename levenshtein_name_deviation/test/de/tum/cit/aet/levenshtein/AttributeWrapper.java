@@ -1,7 +1,8 @@
-package levenshtein;
+package de.tum.cit.aet.levenshtein;
 
+import de.tum.cit.aet.test.Messages;
+import de.tum.cit.aet.test.TestSettings;
 import de.tum.in.test.api.util.ReflectionTestUtils;
-import test.TestSettings;
 
 import org.assertj.core.api.Assertions;
 
@@ -9,9 +10,8 @@ import org.assertj.core.api.Assertions;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import test.Messages;
-import static levenshtein.WrapperProperty.Existence.*;
-import static levenshtein.Utils.*;
+import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
+import static de.tum.cit.aet.levenshtein.Utils.*;
 import static org.assertj.core.api.Assertions.fail;
 
 /**

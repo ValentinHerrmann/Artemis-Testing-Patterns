@@ -119,7 +119,7 @@ public class TestSettings
      * The variant of the exercise being tested.
      * Used in conjunction with the Exercise Variants pattern.
      */
-    //static Constants.Variant variant = Constants.Variant.DEFAULT;
+    public static Constants.Variant variant = Constants.Variant.DEFAULT;
 
     /**
      * The base package where student code is expected to be located.
@@ -128,7 +128,7 @@ public class TestSettings
      * <p><b>Example:</b> With {@code BASE_PACKAGE = ""}, the framework
      * searches for class "Car" at {@code .Car}.</p>
      */
-    public static final String BASE_PACKAGE = "";
+    public static final String BASE_PACKAGE = "de.tum.cit.aet";
 
     /**
      * Enable debugging mode for tests. When set to true, tests will

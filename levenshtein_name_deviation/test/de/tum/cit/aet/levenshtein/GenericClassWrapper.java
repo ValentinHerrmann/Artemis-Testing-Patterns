@@ -1,4 +1,4 @@
-package levenshtein;
+package de.tum.cit.aet.levenshtein;
 
 import java.lang.reflect.Modifier;
 

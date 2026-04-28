@@ -1,17 +1,17 @@
-package levenshtein;
+package de.tum.cit.aet.levenshtein;
 
 
 import de.tum.in.test.api.util.ReflectionTestUtils;
-import test.TestSettings;
+import de.tum.cit.aet.test.TestSettings;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import test.Messages;
-import static levenshtein.WrapperProperty.Existence.*;
-import static levenshtein.Utils.*;
+import de.tum.cit.aet.test.Messages;
+import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
+import static de.tum.cit.aet.levenshtein.Utils.*;
 import static org.assertj.core.api.Assertions.fail;
 
 /**

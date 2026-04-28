@@ -1,4 +1,4 @@
-package test;
+package de.tum.cit.aet.test;
 
 /**
  * Central message catalog for all assertion and feedback messages shown to students.
