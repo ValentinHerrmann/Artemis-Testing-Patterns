@@ -6,7 +6,7 @@
 
     <groupId>io.github.valentinherrmann</groupId>
     <artifactId>levenshtein-testing-framework</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.9.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -51,14 +51,6 @@
                         </goals>
                         <configuration>
                             <classesDirectory>${project.build.testOutputDirectory}</classesDirectory>
-                            <!-- Exclude wrappers package from main JAR -->
-                            <excludes>
-                                io/github/valentinherrmann/wrappers/*.class
-                                io/github/valentinherrmann/test/TestAbstr.class
-                                io/github/valentinherrmann/test/TestImpl.class
-                                io/github/valentinherrmann/test/TestInterface.class
-                                io/github/valentinherrmann/test/TestManager.class
-                            </excludes>
                         </configuration>
                     </execution>
                     <!-- Test-jar built from test-classes (normal behavior) -->
@@ -67,6 +59,31 @@
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Delete unwanted classes from test-classes before packaging -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>clean-unwanted-classes</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${project.build.testOutputDirectory}/io/github/valentinherrmann/wrappers"/>
+                                <delete file="${project.build.testOutputDirectory}/io/github/valentinherrmann/test/TestAbstr.class"/>
+                                <delete file="${project.build.testOutputDirectory}/io/github/valentinherrmann/test/TestImpl.class"/>
+                                <delete file="${project.build.testOutputDirectory}/io/github/valentinherrmann/test/TestInterface.class"/>
+                                <delete file="${project.build.testOutputDirectory}/io/github/valentinherrmann/test/TestManager.class"/>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
