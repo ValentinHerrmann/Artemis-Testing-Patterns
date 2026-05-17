@@ -9,9 +9,6 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Levenshtein Name Deviation Pattern</name>
-    <description>Testing framework based on Levenshtein distance patterns</description>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
@@ -69,36 +66,127 @@
                     </dependency>
                 </dependencies>
             </plugin>
+<!-- ********************************************************************************************** -->
+<!-- Maven Central Publishing Plugins -->
+<!-- ********************************************************************************************** -->
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <tokenAuth>true</tokenAuth>
+                </configuration>
+            </plugin>
 
-            <!-- Maven publishing plugin -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>3.1.3</version>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
+            <!-- Generates Javadoc Jars -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Signs the artifacts with GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Use GPG_PASSPHRASE environment variable -->
+                            <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+                            <!-- Prevent gpg from using pinentry programs -->
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Automates deployment to Sonatype and releases to Maven Central -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.13</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl> <!-- Note: Newer accounts use s01 -->
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <mainClass>B2J_Graphics_Main</mainClass>
+                    <classpathScope>compile</classpathScope>
+                </configuration>
+            </plugin>
+<!-- ********************************************************************************************** -->
+<!-- ********************************************************************************************** -->
         </plugins>
     </build>
-
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/${github.repository}</url>
-        </repository>
-    </distributionManagement>
-
+<!-- ********************************************************************************************** -->
+<!-- Metadata -->
+<!-- ********************************************************************************************** -->
+    <name>Levenshtein Name Deviation Pattern</name>
+    <description>Testing framework based on Levenshtein distance patterns</description>
+    <url>https://github.com/ValentinHerrmann/Levenshtein-Testing-Framework</url>
     <scm>
         <url>https://github.com/ValentinHerrmann/Levenshtein-Testing-Framework</url>
         <connection>scm:git:git://github.com/ValentinHerrmann/Levenshtein-Testing-Framework.git</connection>
         <developerConnection>scm:git:git@github.com:ValentinHerrmann/Levenshtein-Testing-Framework.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
-
+    <licenses>
+        <license>
+            <name>GNU General Public License v3.0</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
+        </license>
+    </licenses>
     <developers>
         <developer>
             <id>ValentinHerrmann</id>
             <name>Valentin Herrmann</name>
-            <url>https://github.com/ValentinHerrmann</url>
+            <email>mail@valentin-herrmann.com</email>
         </developer>
     </developers>
+<!-- ********************************************************************************************** -->
+<!-- ********************************************************************************************** -->
+
 </project>
