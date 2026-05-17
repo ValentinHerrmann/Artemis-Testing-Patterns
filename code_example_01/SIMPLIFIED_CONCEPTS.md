@@ -110,7 +110,7 @@ public Car(String manufacturer, int year) {
 
 ## Struktur-Übersicht
 
-![Simplified Concepts UML](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/code_example_01/puml/simplified_concepts.puml)
+![Simplified Concepts UML](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/main/code_example_01/puml/simplified_concepts.puml)
 
 
 ## Verwendung
