@@ -1,4 +1,4 @@
-package de.tum.cit.aet.levenshtein;
+package io.github.valentinherrmann.levenshtein;
 
 import java.lang.reflect.Modifier;
 

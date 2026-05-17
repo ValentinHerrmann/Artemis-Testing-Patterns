@@ -1,9 +1,7 @@
-package de.tum.cit.aet.test;
+package io.github.valentinherrmann.test;
 
-import de.tum.cit.aet.levenshtein.LevenshteinTest;
-import de.tum.cit.aet.wrappers.*;
-
-
+import static io.github.valentinherrmann.levenshtein.StructuralLevenshtein.structuralTestFactory;
+import static io.github.valentinherrmann.levenshtein.StructuralLevenshtein.DetailLevel.*;
 import static org.assertj.core.api.Assertions.*;
 
 import net.bytebuddy.ByteBuddy;
@@ -14,10 +12,10 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
-import java.util.List;
+import io.github.valentinherrmann.levenshtein.LevenshteinTest;
+import io.github.valentinherrmann.wrappers.*;
 
-import static de.tum.cit.aet.levenshtein.StructuralLevenshtein.structuralTestFactory;
-import static de.tum.cit.aet.levenshtein.StructuralLevenshtein.DetailLevel.*;
+import java.util.List;
 
 /**
  * Main test orchestrator for the Levenshtein Name Deviation Testing Pattern.
@@ -206,10 +204,10 @@ import static de.tum.cit.aet.levenshtein.StructuralLevenshtein.DetailLevel.*;
  * carImpl().testGetter(carImpl().price(), carImpl().getPrice());
  * }</pre>
  *
- * @see de.tum.cit.aet.wrappers.CarWrapper
- * @see de.tum.cit.aet.wrappers.AbstrWrapper
- * @see de.tum.cit.aet.wrappers.DrivableWrapper
- * @see de.tum.cit.aet.levenshtein.StructuralLevenshtein
+ * @see io.github.valentinherrmann.wrappers.CarWrapper
+ * @see io.github.valentinherrmann.wrappers.AbstrWrapper
+ * @see io.github.valentinherrmann.wrappers.DrivableWrapper
+ * @see io.github.valentinherrmann.levenshtein.StructuralLevenshtein
  */
 @LevenshteinTest
 public class TestManager {
@@ -396,7 +394,7 @@ public class TestManager {
      * </ul>
      *
      * @return list of dynamically generated JUnit tests
-     * @see de.tum.cit.aet.levenshtein.StructuralLevenshtein#structuralTestFactory
+     * @see io.github.valentinherrmann.levenshtein.StructuralLevenshtein#structuralTestFactory
      */
     @TestFactory
     List<DynamicTest> structFactory() {
@@ -461,7 +459,7 @@ public class TestManager {
     /**
      * Tests that the getManufacturer() method returns the actual manufacturer attribute value.
      *
-     * <p>Uses {@link de.tum.cit.aet.levenshtein.ClassWrapper#testGetter} to verify
+     * <p>Uses {@link io.github.valentinherrmann.levenshtein.ClassWrapper#testGetter} to verify
      * getter-attribute consistency.</p>
      *
      * @see TestAbstr#testGetManufacturer()
@@ -479,7 +477,7 @@ public class TestManager {
     /**
      * Tests that the getYear() method returns the actual year attribute value.
      *
-     * <p>Uses {@link de.tum.cit.aet.levenshtein.ClassWrapper#testGetter} to verify
+     * <p>Uses {@link io.github.valentinherrmann.levenshtein.ClassWrapper#testGetter} to verify
      * getter-attribute consistency.</p>
      *
      * @see TestAbstr#testGetYear()

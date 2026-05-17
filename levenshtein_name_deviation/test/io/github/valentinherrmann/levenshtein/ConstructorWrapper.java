@@ -1,17 +1,18 @@
-package de.tum.cit.aet.levenshtein;
+package io.github.valentinherrmann.levenshtein;
 
 
 import org.assertj.core.api.Assertions;
 
 import de.tum.in.test.api.util.ReflectionTestUtils;
 
+import static io.github.valentinherrmann.levenshtein.Utils.toWrapperType;
+import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*;
+
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import de.tum.cit.aet.test.Messages;
-import static de.tum.cit.aet.levenshtein.Utils.toWrapperType;
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 
 /**
  * Wrapper for class constructors that verifies their existence, parameter types, and modifiers.

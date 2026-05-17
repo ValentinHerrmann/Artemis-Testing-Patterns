@@ -1,8 +1,8 @@
-package de.tum.cit.aet.test;
+package io.github.valentinherrmann.test;
 
-import static de.tum.cit.aet.levenshtein.Utils.*;
-import static de.tum.cit.aet.test.Constants.*;
-import static de.tum.cit.aet.test.TestManager.*;
+import static io.github.valentinherrmann.levenshtein.Utils.*;
+import static io.github.valentinherrmann.test.Constants.*;
+import static io.github.valentinherrmann.test.TestManager.*;
 import static org.assertj.core.api.Assertions.fail;
 
 import org.assertj.core.api.Assertions;
@@ -44,7 +44,7 @@ import org.junit.jupiter.api.TestMethodOrder;
  * }</pre>
  *
  * <h3>3. Test Organization Pattern</h3>
- * <p>All test methods are {@code public static} to allow delegation from {@link de.tum.cit.aet.test.TestManager}:</p>
+ * <p>All test methods are {@code public static} to allow delegation from {@link io.github.valentinherrmann.test.TestManager}:</p>
  * <pre>{@code
  * // In TestAbstr.java:
  * public static void testConstructorManufacturer() {
@@ -135,9 +135,9 @@ import org.junit.jupiter.api.TestMethodOrder;
  *   <li>{@link #testGetInfo()} - Business logic method</li>
  * </ul>
  *
- * @see de.tum.cit.aet.wrappers.AbstrWrapper
- * @see de.tum.cit.aet.test.TestManager
- * @see de.tum.cit.aet.levenshtein.ClassWrapper#getDynamicSubclassObj
+ * @see io.github.valentinherrmann.wrappers.AbstrWrapper
+ * @see io.github.valentinherrmann.test.TestManager
+ * @see io.github.valentinherrmann.levenshtein.ClassWrapper#getDynamicSubclassObj
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestAbstr {
@@ -233,7 +233,7 @@ public class TestAbstr {
      * Tests that the getManufacturer() method returns the same value as the manufacturer attribute.
      *
      * <p><b>The testGetter() Utility:</b></p>
-     * <p>This test uses the {@link de.tum.cit.aet.levenshtein.ClassWrapper#testGetter} helper method,
+     * <p>This test uses the {@link io.github.valentinherrmann.levenshtein.ClassWrapper#testGetter} helper method,
      * which is one of the most convenient features of the framework.</p>
      *
      * <p><b>What testGetter() does:</b></p>
@@ -275,7 +275,7 @@ public class TestAbstr {
     /**
      * Tests that the getYear() method returns the same value as the year attribute.
      *
-     * <p>Uses the {@link de.tum.cit.aet.levenshtein.ClassWrapper#testGetter} utility
+     * <p>Uses the {@link io.github.valentinherrmann.levenshtein.ClassWrapper#testGetter} utility
      * method for automatic getter-attribute consistency verification.</p>
      *
      * @see #testGetManufacturer() for detailed explanation of testGetter()

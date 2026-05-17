@@ -1,4 +1,4 @@
-package de.tum.cit.aet.levenshtein;
+package io.github.valentinherrmann.levenshtein;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import de.tum.cit.aet.test.TestSettings;
 import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
 
-import static de.tum.cit.aet.levenshtein.Utils.*;
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
+import static io.github.valentinherrmann.levenshtein.Utils.*;
+import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 

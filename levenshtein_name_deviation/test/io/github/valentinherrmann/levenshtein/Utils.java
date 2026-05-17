@@ -1,7 +1,8 @@
-package de.tum.cit.aet.levenshtein;
+package io.github.valentinherrmann.levenshtein;
+
+import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*;
 
 import de.tum.cit.aet.test.Messages;
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
 
 public class Utils
 {

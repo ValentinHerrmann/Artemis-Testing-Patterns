@@ -1,7 +1,7 @@
-package de.tum.cit.aet.test;
+package io.github.valentinherrmann.test;
 
-import static de.tum.cit.aet.levenshtein.Utils.saveCast;
-import static de.tum.cit.aet.test.TestManager.*;
+import static io.github.valentinherrmann.levenshtein.Utils.saveCast;
+import static io.github.valentinherrmann.test.TestManager.*;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
@@ -178,8 +178,8 @@ import org.junit.jupiter.api.TestMethodOrder;
  * // Choose based on whether you need specific test values
  * }</pre>
  *
- * @see de.tum.cit.aet.wrappers.CarWrapper
- * @see de.tum.cit.aet.test.TestManager
+ * @see io.github.valentinherrmann.wrappers.CarWrapper
+ * @see io.github.valentinherrmann.test.TestManager
  * @see TestAbstr
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

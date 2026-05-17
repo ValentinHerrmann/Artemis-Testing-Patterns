@@ -1,4 +1,4 @@
-package de.tum.cit.aet.test;
+package io.github.valentinherrmann.test;
 
 import java.io.FileWriter;
 import java.lang.reflect.Method;

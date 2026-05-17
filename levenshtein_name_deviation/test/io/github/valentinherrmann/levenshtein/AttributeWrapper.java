@@ -1,4 +1,4 @@
-package de.tum.cit.aet.levenshtein;
+package io.github.valentinherrmann.levenshtein;
 
 import de.tum.cit.aet.test.Messages;
 import de.tum.cit.aet.test.TestSettings;
@@ -10,8 +10,8 @@ import org.assertj.core.api.Assertions;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.Utils.*;
+import static io.github.valentinherrmann.levenshtein.Utils.*;
+import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*;
 import static org.assertj.core.api.Assertions.fail;
 
 /**

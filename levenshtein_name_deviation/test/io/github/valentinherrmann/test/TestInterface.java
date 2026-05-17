@@ -1,7 +1,7 @@
-package de.tum.cit.aet.test;
+package io.github.valentinherrmann.test;
 
-import static de.tum.cit.aet.levenshtein.Utils.saveCast;
-import static de.tum.cit.aet.test.TestManager.*;
+import static io.github.valentinherrmann.levenshtein.Utils.saveCast;
+import static io.github.valentinherrmann.test.TestManager.*;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
@@ -119,9 +119,9 @@ import org.junit.jupiter.api.TestMethodOrder;
  *   <li><b>Implementation tests:</b> {@link TestImpl} verifies Car implements interface correctly</li>
  * </ul>
  *
- * @see de.tum.cit.aet.wrappers.DrivableWrapper
+ * @see io.github.valentinherrmann.wrappers.DrivableWrapper
  * @see TestImpl
- * @see de.tum.cit.aet.test.TestManager
+ * @see io.github.valentinherrmann.test.TestManager
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TestInterface {

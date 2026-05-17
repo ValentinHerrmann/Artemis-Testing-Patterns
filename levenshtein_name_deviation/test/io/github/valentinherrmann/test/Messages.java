@@ -1,4 +1,4 @@
-package de.tum.cit.aet.test;
+package io.github.valentinherrmann.test;
 
 /**
  * Central message catalog for all assertion and feedback messages shown to students.

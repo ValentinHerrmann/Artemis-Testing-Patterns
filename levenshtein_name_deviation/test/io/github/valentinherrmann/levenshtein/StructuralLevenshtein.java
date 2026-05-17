@@ -1,4 +1,4 @@
-package de.tum.cit.aet.levenshtein;
+package io.github.valentinherrmann.levenshtein;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;

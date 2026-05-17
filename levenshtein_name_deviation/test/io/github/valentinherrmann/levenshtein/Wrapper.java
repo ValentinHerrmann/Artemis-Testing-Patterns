@@ -1,10 +1,11 @@
-package de.tum.cit.aet.levenshtein;
-
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence;
-import static de.tum.cit.aet.levenshtein.WrapperProperty.Existence.*;
-import static de.tum.cit.aet.levenshtein.Utils.*;
+package io.github.valentinherrmann.levenshtein;
 
 import org.assertj.core.api.Assertions;
+
+import static io.github.valentinherrmann.levenshtein.Utils.*;
+import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence;
+import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*;
+
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import de.tum.cit.aet.test.Messages;

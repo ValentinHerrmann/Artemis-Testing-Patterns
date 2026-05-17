@@ -1,4 +1,4 @@
-package de.tum.cit.aet.levenshtein;
+package io.github.valentinherrmann.levenshtein;
 
 import de.tum.cit.aet.test.TestManager;
 //import de.tum.cit.aet.wrappers.AbstrWrapper;

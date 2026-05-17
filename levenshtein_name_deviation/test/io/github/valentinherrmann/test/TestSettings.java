@@ -1,4 +1,4 @@
-package de.tum.cit.aet.test;
+package io.github.valentinherrmann.test;
 
 /**
  * Central configuration class for the Levenshtein Name Deviation Testing Pattern.
