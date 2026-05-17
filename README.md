@@ -1,4 +1,6 @@
-# Levenshtein Name Deviation Testing Pattern
+# Levenshtein Name Deviation Testing Framework
+
+**Version Notice:** V0260.9.0 was published accidentially (instead of 0.9.0). To get back to well-structure versioning V1000.0.0 acts as V1.0.0.
 
 ## Overview
 
@@ -40,8 +42,28 @@ This pattern creates a forgiving testing environment while maintaining assessmen
 ### Try it out
 Run tests using:
 ```bash
-./gradlew clean test
+./mvnw clean test
 ```
+
+### Load package as dependency in your project
+**Maven:** pom.xml
+```xml
+<!-- Include Levenshtein Testing Framework -->
+<dependency>
+    <groupId>io.github.valentinherrmann</groupId>
+    <artifactId>levenshtein-testing-framework</artifactId>
+    <version>1000.0.0</version> <!-- insert desired version or use dynamic versioning: [1000.0.0,) -->]
+    <scope>test</scope>
+</dependency>
+```
+
+**Gradle:** build.gradle
+```gradle
+// Include Levenshtein Testing Framework
+testImplementation 'io.github.valentinherrmann:levenshtein-testing-framework:1000.0.0'
+``` 
+
+
 
 ### Basic Usage Example
 
