@@ -51,6 +51,14 @@
                         </goals>
                         <configuration>
                             <classesDirectory>${project.build.testOutputDirectory}</classesDirectory>
+                            <!-- Exclude wrappers package from main JAR -->
+                            <excludes>
+                                io/github/valentinherrmann/wrappers/*.class
+                                io/github/valentinherrmann/test/TestAbstr.class
+                                io/github/valentinherrmann/test/TestImpl.class
+                                io/github/valentinherrmann/test/TestInterface.class
+                                io/github/valentinherrmann/test/TestManager.class
+                            </excludes>
                         </configuration>
                     </execution>
                     <!-- Test-jar built from test-classes (normal behavior) -->
