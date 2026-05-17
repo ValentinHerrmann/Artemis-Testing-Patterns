@@ -9,6 +9,7 @@
 /.idea
 *.iml
 .gradle/
+.mvn/
 build/
 target/
 bin/
