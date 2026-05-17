@@ -41,9 +41,16 @@ jobs:
           fi
 
 
-      - name: Extract version from tag
+      - name: Determine version
         id: version
-        run: echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            # Release trigger: use the tag version
+            echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          else
+            # workflow_dispatch or other triggers: use SNAPSHOT version with run number
+            echo "version=0.9.1-${GITHUB_RUN_NUMBER}-SNAPSHOT" >> $GITHUB_OUTPUT
+          fi
 
       - name: Update version in pom.xml
         run: mvn -B versions:set -DnewVersion=${{ steps.version.outputs.version }} -DgenerateBackupPoms=false
