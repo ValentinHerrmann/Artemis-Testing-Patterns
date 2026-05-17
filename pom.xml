@@ -6,7 +6,7 @@
 
     <groupId>io.github.valentinherrmann</groupId>
     <artifactId>levenshtein-testing-framework</artifactId>
-    <version>0.9.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -119,7 +119,7 @@
             </plugin>
 
 
-            <!-- maven-source-plugin: production sources from code_example_01/src are excluded by setting includes to empty -->
+            <!-- maven-source-plugin: attaches production sources from code_example_01/src -->
             <!-- Tests still compile and run against production code during `mvn test` -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -128,7 +128,9 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <phase>none</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

@@ -63,4 +63,4 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           # 2. Run the deploy command, passing the GPG passphrase directly
-          mvn clean deploy -B -DskipTests -Dgpg.passphrase="${GPG_PASSPHRASE}"
+          mvn clean deploy -B -DskipTests -Dgpg.passphrase="${GPG_PASSPHRASE}" -s .mvn/settings.xml
