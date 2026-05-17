@@ -1,4 +1,4 @@
-package de.tum.cit.aet;
+package io.github.valentinherrmann;
 
 /**
  * Interface for driveable vehicles.

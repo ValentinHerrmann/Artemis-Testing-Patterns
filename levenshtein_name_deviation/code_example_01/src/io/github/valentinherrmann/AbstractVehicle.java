@@ -1,4 +1,4 @@
-package de.tum.cit.aet;
+package io.github.valentinherrmann;
 
 /**
  * Abstract base class for all vehicles.
