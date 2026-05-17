@@ -35,12 +35,25 @@
         <testSourceDirectory>test</testSourceDirectory>
 
         <plugins>
-            <!-- Test jar plugin -->
+            <!-- Main jar plugin: build from test-classes instead of classes -->
+            <!-- This ensures the main JAR contains only test classes, not production code -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.2</version>
                 <executions>
+                    <!-- Main jar built from test-classes (not default-compile output) -->
+                    <execution>
+                        <id>default-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.testOutputDirectory}</classesDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Test-jar built from test-classes (normal behavior) -->
                     <execution>
                         <id>test-jar</id>
                         <goals>
@@ -82,6 +95,8 @@
             </plugin>
 
 
+            <!-- maven-source-plugin: production sources from code_example_01/src are excluded by setting includes to empty -->
+            <!-- Tests still compile and run against production code during `mvn test` -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -89,9 +104,7 @@
                 <executions>
                     <execution>
                         <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>
