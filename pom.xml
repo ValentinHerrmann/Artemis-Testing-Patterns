@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <github.repository>ValentinHerrmann/Levenshtein-Testing-Framework</github.repository>
     </properties>
 
     <dependencies>
@@ -37,16 +38,12 @@
         <testSourceDirectory>test</testSourceDirectory>
 
         <plugins>
-            <!-- Jar plugin: disable default jar, enable test-jar -->
+            <!-- Test jar plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.2</version>
                 <executions>
-                    <execution>
-                        <id>default-jar</id>
-                        <phase>none</phase>
-                    </execution>
                     <execution>
                         <id>test-jar</id>
                         <goals>
