@@ -16,7 +16,7 @@ if (releaseTag) {
     def runNumber = System.getenv('GITHUB_RUN_NUMBER')
     version = runNumber ? "${baseVersion}.${runNumber}" : baseVersion
 }
-group = 'de.tum.cit.aet'
+group = 'io.github.valentinherrmann'
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 

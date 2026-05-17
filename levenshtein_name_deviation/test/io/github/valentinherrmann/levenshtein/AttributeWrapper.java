@@ -1,7 +1,7 @@
 package io.github.valentinherrmann.levenshtein;
 
-import de.tum.cit.aet.test.Messages;
-import de.tum.cit.aet.test.TestSettings;
+import io.github.valentinherrmann.test.Messages;
+import io.github.valentinherrmann.test.TestSettings;
 import de.tum.in.test.api.util.ReflectionTestUtils;
 
 import org.assertj.core.api.Assertions;

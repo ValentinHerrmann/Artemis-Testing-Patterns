@@ -52,7 +52,7 @@ public class CarWrapper<T> extends ClassWrapper<T> {
     private final MethodWrapper<T, Void> start;
     
     public CarWrapper() {
-        super("Car", "de.tum.cit.aet", "public");
+        super("Car", "io.github.valentinherrmann", "public");
         
         price = new AttributeWrapper<>(this, "price", double.class, "private");
         start = new MethodWrapper<>(this, "start", void.class, "public");
@@ -91,7 +91,7 @@ void testCarBehavior() {
 
 ### Package Structure
 
-**`de.tum.cit.aet.levenshtein`** - Core framework (reusable)
+**`io.github.valentinherrmann.levenshtein`** - Core framework (reusable)
 * `Wrapper<T>` - Abstract base for all wrappers
 * `ClassWrapper<T>` - Wraps classes (abstract/concrete/interface)
 * `AttributeWrapper<T,V>` - Wraps fields/attributes
@@ -102,12 +102,12 @@ void testCarBehavior() {
 * `StructuralLevenshtein` - Test factory for generating JUnit DynamicTests
 * `Utils` - Levenshtein distance and type compatibility utilities
 
-**`de.tum.cit.aet.wrappers`** - Test-specific implementations
+**`io.github.valentinherrmann.wrappers`** - Test-specific implementations
 * One wrapper class per class under test (e.g., `CarWrapper`, `AbstrWrapper`, `DrivableWrapper`)
 * Defines expected structure (attributes, methods, constructors)
 * Provides access methods for test code
 
-**`de.tum.cit.aet`** - Test execution
+**`io.github.valentinherrmann`** - Test execution
 * `TestManager` - Contains @TestFactory and @Test methods
 * `TestSettings` - Configuration (package, deviation thresholds)
 * `Constants` - Centralized test data (names, types)
@@ -126,7 +126,7 @@ public class CarWrapper<T> extends ClassWrapper<T> {
     private final MethodWrapper<T, Double> calculateCost;
     
     public CarWrapper(ClassWrapper<?> superClass, ClassWrapper<?>... interfaces) {
-        super("Car", "de.tum.cit.aet", superClass, interfaces, "public");
+        super("Car", "io.github.valentinherrmann", superClass, interfaces, "public");
         
         // Define expected attributes
         price = new AttributeWrapper<>(this, "price", double.class, "private");
@@ -216,7 +216,7 @@ public Object getDynamicSubclassObj(Class<?>[] constructorParamTypes, Object... 
 
 ```java
 public class TestSettings {
-    public static final String BASE_PACKAGE = "de.tum.cit.aet";
+    public static final String BASE_PACKAGE = "io.github.valentinherrmann";
     
     // Deviation thresholds (0-100, percentage of max string length)
     public static final int CLASS_NAME_DEVIATION_THRESHOLD = 20;
@@ -264,7 +264,7 @@ public class CarWrapper<T> extends ClassWrapper<T> {
     private final MethodWrapper<T, Double> calculateCost;
     
     public CarWrapper(ClassWrapper<?> superClass, ClassWrapper<?>... interfaces) {
-        super("Car", "de.tum.cit.aet", superClass, interfaces, "public");
+        super("Car", "io.github.valentinherrmann", superClass, interfaces, "public");
         
         // Initialize attributes with expected name, type, and modifiers
         price = new AttributeWrapper<>(this, "price", double.class, "private");
@@ -448,7 +448,7 @@ ByteBuddy is used to test abstract classes and private members:
 ```java
 public class AbstrWrapper<T> extends ClassWrapper<T> {
     public AbstrWrapper() {
-        super("AbstractVehicle", "de.tum.cit.aet", "public", "abstract");
+        super("AbstractVehicle", "io.github.valentinherrmann", "public", "abstract");
         // ... define members ...
     }
     
@@ -596,11 +596,11 @@ car.verifyInterfaces();   // Checks implements Driveable
 
 ### Core Framework (levenshtein package)
 
-![Levenshtein Framework](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/de.tum.cit.aet.levenshtein.puml)
+![Levenshtein Framework](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/io.github.valentinherrmann.levenshtein.puml)
 
 
 ### Test Implementation (wrappers package)
-![Wrappers](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/de.tum.cit.aet.wrappers.puml)
+![Wrappers](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/ValentinHerrmann/Artemis-Testing-Patterns/refs/heads/develop/levenshtein_name_deviation/puml/io.github.valentinherrmann.wrappers.puml)
 
 
 ---

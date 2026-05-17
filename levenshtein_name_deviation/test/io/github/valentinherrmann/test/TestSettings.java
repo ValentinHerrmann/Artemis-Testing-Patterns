@@ -128,7 +128,7 @@ public class TestSettings
      * <p><b>Example:</b> With {@code BASE_PACKAGE = ""}, the framework
      * searches for class "Car" at {@code .Car}.</p>
      */
-    public static final String BASE_PACKAGE = "de.tum.cit.aet";
+    public static final String BASE_PACKAGE = "io.github.valentinherrmann";
 
     /**
      * Enable debugging mode for tests. When set to true, tests will

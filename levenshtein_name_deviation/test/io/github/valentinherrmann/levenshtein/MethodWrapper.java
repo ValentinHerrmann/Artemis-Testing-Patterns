@@ -2,14 +2,14 @@ package io.github.valentinherrmann.levenshtein;
 
 
 import de.tum.in.test.api.util.ReflectionTestUtils;
-import de.tum.cit.aet.test.TestSettings;
+import io.github.valentinherrmann.test.TestSettings;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import de.tum.cit.aet.test.Messages;
+import io.github.valentinherrmann.test.Messages;
 
 import static io.github.valentinherrmann.levenshtein.Utils.*;
 import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*;

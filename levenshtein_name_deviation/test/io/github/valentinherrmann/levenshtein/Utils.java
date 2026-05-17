@@ -2,7 +2,7 @@ package io.github.valentinherrmann.levenshtein;
 
 import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*;
 
-import de.tum.cit.aet.test.Messages;
+import io.github.valentinherrmann.test.Messages;
 
 public class Utils
 {

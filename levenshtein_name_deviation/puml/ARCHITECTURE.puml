@@ -9,7 +9,7 @@ skinparam packageStyle rectangle
 
 title Levenshtein Name Deviation Pattern - Architecture Overview
 
-package "Test Framework\n(de.tum.cit.aet)" as AET {
+package "Test Framework\n(io.github.valentinherrmann)" as AET {
 
     package "levenshtein" <<Core Framework>> #2C3E50 {
         class Wrapper<T> <<abstract>> {
@@ -68,7 +68,7 @@ package "Test Framework\n(de.tum.cit.aet)" as AET {
     }
 }
 
-package "Student Submission\n(de.tum.cit.aet)" as Sub #E74C3C {
+package "Student Submission\n(io.github.valentinherrmann)" as Sub #E74C3C {
     interface Driveable {
         MAX_SPEED
         start()

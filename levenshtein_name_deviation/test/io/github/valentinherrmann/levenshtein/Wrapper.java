@@ -8,7 +8,7 @@ import static io.github.valentinherrmann.levenshtein.WrapperProperty.Existence.*
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import de.tum.cit.aet.test.Messages;
+import io.github.valentinherrmann.test.Messages;
 
  /**
  * Abstract base class for wrapping and verifying Java reflection elements (classes, methods, fields, constructors).

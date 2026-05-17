@@ -52,7 +52,7 @@ import java.util.List;
  *
  * <pre>{@code
  * // In TestAbstr.java:
- * import static de.tum.cit.aet.TestManager.*;
+ * import static io.github.valentinherrmann.TestManager.*;
  *
  * public static void testGetManufacturer() {
  *     vehicleAbstr().testGetter(
@@ -236,7 +236,7 @@ public class TestManager {
      *
      * <p><b>Usage:</b></p>
      * <pre>{@code
-     * import static de.tum.cit.aet.TestManager.*;
+     * import static io.github.valentinherrmann.TestManager.*;
      *
      * vehicleAbstr().manufacturer().getValue();
      * }</pre>

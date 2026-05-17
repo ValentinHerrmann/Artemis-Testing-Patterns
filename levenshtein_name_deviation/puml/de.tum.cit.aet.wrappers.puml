@@ -5,7 +5,7 @@ skinparam linetype ortho
 
 !include https://raw.githubusercontent.com/patrik-csak/one-dark-plantuml-theme/v1.0.1/theme.puml
 
-package "de.tum.cit.aet" as AET {
+package "io.github.valentinherrmann" as AET {
 
     package "levenshtein" <<Framework>> {
         abstract class Wrapper<T> {

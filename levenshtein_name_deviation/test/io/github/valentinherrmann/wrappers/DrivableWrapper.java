@@ -1,10 +1,10 @@
-package de.tum.cit.aet.wrappers;
+package io.github.valentinherrmann.wrappers;
 
 
-import de.tum.cit.aet.levenshtein.*;
+import io.github.valentinherrmann.levenshtein.*;
 
-import static de.tum.cit.aet.test.Constants.*;
-import static de.tum.cit.aet.test.TestSettings.BASE_PACKAGE;
+import static io.github.valentinherrmann.test.Constants.*;
+import static io.github.valentinherrmann.test.TestSettings.BASE_PACKAGE;
 
 /**
  * Wrapper for the Driveable interface.

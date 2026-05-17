@@ -12,7 +12,7 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import de.tum.cit.aet.test.Messages;
+import io.github.valentinherrmann.test.Messages;
 
 /**
  * Wrapper for class constructors that verifies their existence, parameter types, and modifiers.

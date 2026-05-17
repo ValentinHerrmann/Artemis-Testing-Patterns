@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
-import de.tum.cit.aet.test.Messages;
-import de.tum.cit.aet.test.TestSettings;
+import io.github.valentinherrmann.test.Messages;
+import io.github.valentinherrmann.test.TestSettings;
 
 import org.assertj.core.api.Assertions;
 import org.junit.platform.commons.util.ReflectionUtils;
