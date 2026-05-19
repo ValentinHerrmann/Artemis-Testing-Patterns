@@ -6,7 +6,7 @@ hide empty members
 
 !include https://raw.githubusercontent.com/patrik-csak/one-dark-plantuml-theme/v1.0.1/theme.puml
 
-package "de.cit.tum.de.levenshtein" as LEV {
+package "io.github.valentinherrmann.levenshtein" as LEV {
 
     class WrapperProperty<T> {
         ~expected: T
